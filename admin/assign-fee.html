@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEI – Assign Fee</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../components.css">
+  <link rel="stylesheet" href="../responsive-components.css">
+  <style>
+    /* ============================================
+       INTERNAL CSS - Unified Design System
+       Based on: enroll.css / fee.css / view-details.css
+       Blue Theme | Full Width | Responsive
+       ============================================ */
+
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, Roboto, sans-serif;
+    }
+
+    body {
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    /* ===== MAIN PANEL ===== */
+    .main-panel {
+      flex: 1;
+      padding: 40px 32px;
+      background: #f8fafc;
+      min-height: calc(100vh - 70px);
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: white;
+      padding: 24px 32px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e9eef3;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .page-header h1 i {
+      color: #2563eb;
+      background: none;
+      -webkit-text-fill-color: #2563eb;
+    }
+
+    .page-header p {
+      color: #475569;
+      margin-top: 8px;
+      font-size: 15px;
+      border-left: 3px solid #3b82f6;
+      padding-left: 16px;
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: white;
+      padding: 32px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.07);
+      border: 1px solid #f1f5f9;
+      margin-bottom: 28px;
+    }
+
+    .card-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-title-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-title i {
+      color: #2563eb;
+      font-size: 22px;
+    }
+
+    /* ===== BADGE COUNTER ===== */
+    .badge-counter {
+      background: #eef2ff;
+      padding: 4px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e40af;
+      border-radius: 0;
+      white-space: nowrap;
+    }
+
+    /* ===== FORM GRIDS ===== */
+    .form-grid-5cols {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px;
+    }
+
+    .form-grid-3cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    /* ===== FORM GROUPS ===== */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group label i {
+      color: #2563eb;
+      width: 18px;
+      text-align: center;
+    }
+
+    .req {
+      color: #ef4444;
+      margin-left: 3px;
+    }
+
+    /* ===== FORM CONTROLS ===== */
+    .form-control {
+      padding: 12px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 0;
+      font-size: 14.5px;
+      color: #1e293b;
+      transition: all 0.25s;
+      background: white;
+      width: 100%;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+    }
+
+    .form-control:disabled {
+      background: #f8fafc;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+
+    select.form-control {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+    }
+
+    /* ===== FEE TYPE INPUT GROUP (datalist style) ===== */
+    .fee-type-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    .fee-type-wrap input {
+      padding-right: 36px;
+    }
+
+    .fee-type-toggle {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+    }
+
+    .fee-type-toggle:hover {
+      color: #2563eb;
+    }
+
+    .fee-type-menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1.5px solid #e2e8f0;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      z-index: 100;
+      max-height: 220px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .fee-type-menu.open {
+      display: block;
+    }
+
+    .fee-type-menu button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: #1e293b;
+      background: white;
+      border: none;
+      border-bottom: 1px solid #f1f5f9;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+
+    .fee-type-menu button:last-child {
+      border-bottom: none;
+    }
+
+    .fee-type-menu button:hover {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    /* ===== QUICK FILL BOX ===== */
+    .quick-fill-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 20px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      flex-wrap: wrap;
+    }
+
+    .quick-fill-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .quick-fill-left i {
+      color: #2563eb;
+      font-size: 18px;
+    }
+
+    .quick-fill-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .quick-fill-input {
+      padding: 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 0;
+      font-size: 14px;
+      color: #1e293b;
+      width: 160px;
+      transition: all 0.25s;
+    }
+
+    .quick-fill-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    /* ===== PILL BUTTONS ===== */
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      background: white;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .btn-pill i {
+      color: #2563eb;
+      font-size: 13px;
+    }
+
+    .btn-pill:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+
+    .btn-pill.primary {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    .btn-pill.primary i {
+      color: white;
+    }
+
+    .btn-pill.primary:hover {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
+    }
+
+    /* ===== SELECTION TOOLBAR ===== */
+    .selection-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 20px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .selection-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .selection-info strong {
+      font-size: 13.5px;
+      color: #334155;
+      margin-right: 4px;
+    }
+
+    /* ===== STUDENT TABLE WRAPPER ===== */
+    .student-table-wrapper {
+      overflow-x: auto;
+      overflow-y: visible;
+      -webkit-overflow-scrolling: touch;
+      width: 100%;
+      border: 1.5px solid #e2e8f0;
+      margin-bottom: 24px;
+    }
+
+    .student-table-wrapper table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
+      min-width: 100%;
+      white-space: nowrap;
+    }
+
+    /* ===== TABLE HEADERS - BLUE THEME ===== */
+    .student-table-wrapper th {
+      text-align: left;
+      padding: 16px 16px;
+      background: #2563eb;
+      font-weight: 700;
+      font-size: 12.5px;
+      color: white;
+      border-bottom: 2px solid #1d4ed8;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .student-table-wrapper th i {
+      color: white;
+      margin-right: 6px;
+    }
+
+    .student-table-wrapper td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f2f5;
+      font-size: 14px;
+      vertical-align: middle;
+      white-space: nowrap;
+      color: #1e293b;
+    }
+
+    .student-table-wrapper tr:hover {
+      background: #fafcff;
+    }
+
+    .student-table-wrapper tr.selected-row {
+      background: #eff6ff;
+    }
+
+    .student-table-wrapper tr.selected-row:hover {
+      background: #dbeafe;
+    }
+
+    .student-table-wrapper tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ===== STUDENT CHECKBOX ===== */
+    .student-checkbox {
+      width: 17px;
+      height: 17px;
+      accent-color: #2563eb;
+      cursor: pointer;
+    }
+
+    /* ===== FEE INPUT ===== */
+    .fee-input {
+      padding: 8px 12px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 0;
+      font-size: 14px;
+      color: #1e293b;
+      width: 130px;
+      transition: all 0.25s;
+    }
+
+    .fee-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .btn {
+      padding: 12px 26px;
+      border: none;
+      border-radius: 0;
+      font-size: 14.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+    }
+
+    .btn i {
+      color: inherit;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-primary i {
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-secondary {
+      background: #f8fafc;
+      color: #334155;
+      border: 1.5px solid #e2e8f0;
+    }
+
+    .btn-secondary i {
+      color: #2563eb;
+    }
+
+    .btn-secondary:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      transform: translateY(-2px);
+    }
+
+    /* ===== NO STUDENTS NOTICE ===== */
+    #noStudentsNotice {
+      text-align: center;
+      padding: 30px;
+      color: #64748b;
+    }
+
+    #noStudentsNotice i {
+      font-size: 32px;
+      color: #cbd5e1;
+      margin-bottom: 8px;
+    }
+
+    #noStudentsNotice a {
+      color: #2563eb;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    #noStudentsNotice a:hover {
+      text-decoration: underline;
+    }
+
+    /* ===== MONTH & YEAR PICKER ===== */
+    .month-year-picker {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 8px;
+    }
+
+    .month-year-picker .form-control {
+      padding-right: 36px;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+    }
+
+    .month-year-picker .month-select {
+      min-width: 0;
+    }
+
+    .month-year-picker .year-select {
+      min-width: 0;
+      text-align: center;
+      background-image: none;
+    }
+
+    /* ===== TOAST NOTIFICATIONS ===== */
+    .toast-msg {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1e293b;
+      color: white;
+      padding: 16px 28px;
+      border-radius: 0;
+      font-size: 14.5px;
+      font-weight: 500;
+      z-index: 9999;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideUp 0.35s ease;
+      max-width: 480px;
+    }
+
+    .toast-msg i {
+      color: #3b82f6;
+      font-size: 18px;
+    }
+
+    .toast-msg.toast-success {
+      background: #065f46;
+    }
+
+    .toast-msg.toast-success i {
+      color: #6ee7b7;
+    }
+
+    @keyframes slideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ============================================
+       RESPONSIVE BREAKPOINTS
+       ============================================ */
+
+    /* ===== LARGE DESKTOP (1200px and below) ===== */
+    @media (max-width: 1200px) {
+      .form-grid-5cols {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* ===== TABLET / SMALL DESKTOP (1024px and below) ===== */
+    @media (max-width: 1024px) {
+      .main-panel {
+        padding: 24px 20px;
+      }
+
+      .page-header {
+        padding: 20px 24px;
+      }
+
+      .page-header h1 {
+        font-size: 24px;
+      }
+
+      .page-header p {
+        font-size: 14px;
+      }
+
+      .card {
+        padding: 24px 20px;
+      }
+
+      .card-title {
+        font-size: 17px;
+      }
+
+      .form-grid-3cols {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .student-table-wrapper table {
+        min-width: 850px;
+        width: auto;
+      }
+
+      .student-table-wrapper th,
+      .student-table-wrapper td {
+        padding: 13px 14px;
+        font-size: 13px;
+      }
+    }
+
+    /* ===== MOBILE (768px and below) ===== */
+    @media (max-width: 768px) {
+      .main-panel {
+        padding: 20px 16px;
+      }
+
+      .page-header {
+        padding: 18px 20px;
+      }
+
+      .page-header h1 {
+        font-size: 21px;
+        gap: 10px;
+      }
+
+      .page-header p {
+        font-size: 13.5px;
+        padding-left: 12px;
+      }
+
+      .card {
+        padding: 20px 16px;
+      }
+
+      .card-title {
+        font-size: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 20px;
+      }
+
+      .card-title-left {
+        flex-wrap: wrap;
+      }
+
+      /* All grids become single column */
+      .form-grid-5cols,
+      .form-grid-3cols {
+        grid-template-columns: 1fr;
+      }
+
+      /* Quick fill stacks */
+      .quick-fill-box {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .quick-fill-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .quick-fill-input {
+        width: 100%;
+      }
+
+      .btn-pill {
+        justify-content: center;
+      }
+
+      /* Selection toolbar stacks */
+      .selection-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .selection-info {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      /* Table - scrollable */
+      .student-table-wrapper table {
+        min-width: 720px;
+        width: auto;
+      }
+
+      .student-table-wrapper th {
+        font-size: 11px;
+        padding: 10px 10px;
+      }
+
+      .student-table-wrapper td {
+        padding: 10px 10px;
+        font-size: 12px;
+      }
+
+      .fee-input {
+        width: 100px;
+        padding: 6px 8px;
+        font-size: 12px;
+      }
+
+      /* Buttons stack vertically */
+      .btn-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        justify-content: center;
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+
+      /* Form controls */
+      .form-control {
+        padding: 12px 14px;
+        font-size: 14px;
+      }
+
+      .form-group label {
+        font-size: 13.5px;
+      }
+
+      .form-group label i {
+        width: 16px;
+        font-size: 14px;
+      }
+
+      /* Toast */
+      .toast-msg {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        padding: 14px 20px;
+        font-size: 13.5px;
+        text-align: center;
+        justify-content: center;
+        max-width: none;
+      }
+
+      /* Month-year picker */
+      .month-year-picker {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== SMALL MOBILE (480px and below) ===== */
+    @media (max-width: 480px) {
+      .main-panel {
+        padding: 16px 12px;
+      }
+
+      .page-header {
+        padding: 16px 18px;
+      }
+
+      .page-header h1 {
+        font-size: 18px;
+        gap: 8px;
+      }
+
+      .page-header h1 i {
+        font-size: 17px;
+      }
+
+      .page-header p {
+        font-size: 12.5px;
+        padding-left: 10px;
+      }
+
+      .card {
+        padding: 16px 14px;
+      }
+
+      .card-title {
+        font-size: 15px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+      }
+
+      .card-title i {
+        font-size: 18px;
+      }
+
+      .badge-counter {
+        font-size: 11px;
+        padding: 3px 10px;
+      }
+
+      .form-control {
+        padding: 10px 12px;
+        font-size: 13.5px;
+      }
+
+      /* Table - smaller min-width */
+      .student-table-wrapper table {
+        min-width: 600px;
+        width: auto;
+      }
+
+      .student-table-wrapper th {
+        font-size: 10px;
+        padding: 9px 8px;
+        letter-spacing: 0;
+      }
+
+      .student-table-wrapper td {
+        padding: 9px 8px;
+        font-size: 11px;
+      }
+
+      .fee-input {
+        width: 80px;
+        padding: 5px 6px;
+        font-size: 11px;
+      }
+
+      .btn {
+        padding: 10px 16px;
+        font-size: 13px;
+        gap: 6px;
+      }
+
+      .btn-actions {
+        gap: 10px;
+        margin-top: 24px;
+        padding-top: 18px;
+      }
+
+      .btn-pill {
+        padding: 7px 12px;
+        font-size: 12px;
+      }
+
+      .req {
+        font-size: 12px;
+      }
+
+      .toast-msg {
+        padding: 12px 16px;
+        font-size: 12.5px;
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+      }
+
+      .form-group label i {
+        width: 14px;
+        font-size: 13px;
+      }
+    }
+
+    /* ===== EXTRA SMALL (360px and below) ===== */
+    @media (max-width: 360px) {
+      .main-panel {
+        padding: 10px 8px;
+      }
+
+      .student-table-wrapper table {
+        min-width: 500px;
+        width: auto;
+      }
+
+      .student-table-wrapper th {
+        font-size: 9px;
+        padding: 8px 6px;
+      }
+
+      .student-table-wrapper td {
+        padding: 8px 6px;
+        font-size: 10px;
+      }
+
+      .fee-input {
+        width: 70px;
+        padding: 4px 5px;
+        font-size: 10px;
+      }
+
+      .btn-pill {
+        font-size: 11px;
+        padding: 6px 10px;
+      }
+    }
+
+    /* ===== PRINT STYLES ===== */
+    @media print {
+      .btn-actions,
+      .btn-pill,
+      .selection-toolbar,
+      .student-checkbox,
+      .fee-input {
+        display: none !important;
+      }
+
+      .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+
+      .page-header {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+
+      .student-table-wrapper th {
+        background: #2563eb !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .student-table-wrapper {
+        overflow: visible !important;
+        border: 1px solid #ddd;
+      }
+
+      .student-table-wrapper table {
+        min-width: 100% !important;
+        width: 100% !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Placeholder -->
+  <div id="header-placeholder"></div>
+
+  <div class="app-wrapper" id="appWrapper">
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-placeholder"></div>
+
+    <main class="main-panel">
+      <div class="page-header">
+        <h1><i class="fas fa-money-bill-wave"></i> Assign Fee</h1>
+        <p>Select a class, choose one or more students, set fee amounts individually or in bulk, and assign fees directly to students.</p>
+      </div>
+
+      <!-- 1. Class Information -->
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-left">
+            <i class="fas fa-chalkboard"></i> Class Information
+          </div>
+        </div>
+        <div class="form-grid-5cols">
+          <div class="form-group">
+            <label><i class="fas fa-chalkboard-teacher"></i> Class Name <span class="req">*</span></label>
+            <select class="form-control" id="classSelect" onchange="onClassChange()" required>
+              <option value="">-- Select Class --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-id-card"></i> Class ID</label>
+            <input type="text" class="form-control" id="s_classId" disabled placeholder="Class ID">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-calendar-alt"></i> Session</label>
+            <input type="text" class="form-control" id="s_session" disabled placeholder="Session">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-layer-group"></i> Grade</label>
+            <input type="text" class="form-control" id="s_grade" disabled placeholder="Grade">
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-tags"></i> Section</label>
+            <input type="text" class="form-control" id="s_section" disabled placeholder="Section">
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Fee Details & Global Amount Settings -->
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-left">
+            <i class="fas fa-file-invoice-dollar"></i> Fee Structure Details
+          </div>
+        </div>
+
+        <div class="form-grid-3cols">
+          <!-- ===== Fee Type: free text + dropdown picker ===== -->
+          <div class="form-group">
+            <label><i class="fas fa-tag"></i> Fee Type <span class="req">*</span></label>
+            <div class="fee-type-wrap" id="feeTypeWrap">
+              <input type="text" class="form-control" id="feeType" placeholder="Type or pick a fee type..." autocomplete="off" required>
+              <button type="button" class="fee-type-toggle" id="feeTypeToggle" title="Show common fee types">
+                <i class="fas fa-chevron-down"></i>
+              </button>
+              <div class="fee-type-menu" id="feeTypeMenu">
+                <button type="button" data-value="Tuition Fee">Tuition Fee</button>
+                <button type="button" data-value="Admission Fee">Admission Fee</button>
+                <button type="button" data-value="Exam Fee">Exam Fee</button>
+                <button type="button" data-value="Sports Fee">Sports Fee</button>
+                <button type="button" data-value="Fine">Fine</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label><i class="fas fa-calendar-alt"></i> Fee Month & Year <span class="req">*</span></label>
+            <div class="month-year-picker">
+              <select class="form-control month-select" id="feeMonthSelect" onchange="syncFeeMonth()" required>
+                <!-- Populated dynamically -->
+              </select>
+              <input type="text" class="form-control year-select" id="feeYearInput" readonly>
+              <!-- Hidden input keeps original id for existing JS compatibility -->
+              <input type="hidden" id="feeMonth" value="">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label><i class="fas fa-calendar-check"></i> Due Date <span class="req">*</span></label>
+            <input type="date" class="form-control" id="dueDate" required>
+          </div>
+        </div>
+
+        <!-- Quick Fill Tool for Selected Students -->
+        <div class="quick-fill-box" style="margin-top: 16px;">
+          <div class="quick-fill-left">
+            <i class="fas fa-magic"></i>
+            <span>Bulk Fee Applicator:</span>
+          </div>
+          <div class="quick-fill-controls">
+            <input type="number" class="quick-fill-input" id="bulkAmount" placeholder="Amount (PKR)" min="0" step="50" value="4500">
+            <button type="button" class="btn-pill primary" onclick="applyBulkAmountToSelected()">
+              <i class="fas fa-check-double"></i> Apply to Selected (<span id="btnSelectedCount">0</span>)
+            </button>
+            <button type="button" class="btn-pill" onclick="applyBulkAmountToAll()">
+              <i class="fas fa-users"></i> Apply to All in Class
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Student Selection Table -->
+      <div class="card" id="studentsCard" style="display:none;">
+        <div class="card-title">
+          <div class="card-title-left">
+            <i class="fas fa-users"></i> Student Roster & Fee Allocation
+            <span id="classNameBadge" style="font-size:14px;color:#2563eb;font-weight:600;background:#eff6ff;padding:3px 10px;border-radius:6px;"></span>
+          </div>
+          <div id="selectionSummaryBadge" class="badge-counter">
+            0 / 0 Selected
+          </div>
+        </div>
+
+        <!-- Selection Toolbar -->
+        <div class="selection-toolbar">
+          <div class="selection-info">
+            <span><strong>Select:</strong></span>
+            <button type="button" class="btn-pill" onclick="selectAllStudents(true)">All</button>
+            <button type="button" class="btn-pill" onclick="selectAllStudents(false)">None</button>
+            <button type="button" class="btn-pill" onclick="invertSelection()">Invert</button>
+          </div>
+
+          <div style="min-width: 240px; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-search" style="color:#94a3b8;"></i>
+            <input type="text" class="form-control" id="studentSearchInput" placeholder="Filter students in class..." oninput="filterClassStudents()" style="padding:6px 10px; font-size:13px;">
+          </div>
+        </div>
+
+        <!-- Student Table -->
+        <div class="student-table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 50px; text-align: center;">
+                  <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAllCheckbox(this.checked)">
+                </th>
+                <th>Reg. Number</th>
+                <th>Student Name</th>
+                <th>Father Name</th>
+                <th>Fee Amount (PKR)</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody">
+              <!-- Student rows rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="noStudentsNotice" style="display:none; text-align:center; padding:30px; color:#64748b;">
+          <i class="fas fa-user-slash" style="font-size:32px; color:#cbd5e1; margin-bottom:8px;"></i>
+          <p>No students enrolled in this class yet. Go to <a href="enroll-student.html" style="color:#2563eb;font-weight:600;">Enroll Student</a> to add students.</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-actions">
+          <button type="button" class="btn btn-primary" onclick="assignFeeToSelectedStudents()">
+            <i class="fas fa-save"></i> Assign Fee to Selected (<span id="btnSubmitCount">0</span>)
+          </button>
+          <button type="button" class="btn btn-secondary" onclick="resetForm()">
+            <i class="fas fa-undo"></i> Reset Form
+          </button>
+          <a href="view-fee-details.html" class="btn btn-secondary">
+            <i class="fas fa-eye"></i> View All Fee Records
+          </a>
+          <a href="dashboard.html" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+          </a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../components.js"></script>
+  <script>
+    // ================= COMPONENT LOADING (HEADER & SIDEBAR) =================
+    function loadComponents() {
+      // Load Header
+      fetch('header.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('header-placeholder').innerHTML = data;
+        })
+        .catch(err => console.error('Error loading header:', err));
+
+      // Load Sidebar
+      fetch('sidebar.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('sidebar-placeholder').innerHTML = data;
+        })
+        .catch(err => console.error('Error loading sidebar:', err));
+    }
+
+    // Initialize everything after components are loaded
+    window.addEventListener('load', function() {
+      loadComponents();
+
+      // Give time for HTML to load then initialize JS
+      setTimeout(() => {
+        if (typeof window.initHeaderAndSidebar === 'function') {
+          window.initHeaderAndSidebar();
+        }
+      }, 400);
+
+      // Existing page initialization
+      populateClassDropdown();
+      populateMonthsDropdown();
+      initFeeTypePicker();
+      // Due date is now left empty for admin to pick
+    });
+
+    // ================= STORAGE HELPERS (PURE LOCALSTORAGE) =================
+    function loadClasses() {
+      try {
+        const data = localStorage.getItem('messClasses');
+        return data ? JSON.parse(data) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function loadStudents() {
+      try {
+        const data = localStorage.getItem('messStudents');
+        return data ? JSON.parse(data) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function loadFeeRecords() {
+      try {
+        const data = localStorage.getItem('messFeeRecords');
+        return data ? JSON.parse(data) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveFeeRecords(records) {
+      localStorage.setItem('messFeeRecords', JSON.stringify(records));
+    }
+
+    // ================= TOAST HELPERS =================
+    // Generic info/warning toast (blue info icon)
+    function showToast(msg) {
+      let t = document.createElement('div');
+      t.className = 'toast-msg';
+      t.innerHTML = `<i class="fas fa-info-circle"></i> ${msg}`;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2400);
+    }
+
+    // Success toast (green style) — used for successful assignments
+    function showSuccessToast(msg) {
+      let t = document.createElement('div');
+      t.className = 'toast-msg toast-success';
+      t.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2600);
+    }
+
+    // ================= FEE TYPE PICKER (free text + dropdown) =================
+    function initFeeTypePicker() {
+      const wrap = document.getElementById('feeTypeWrap');
+      const input = document.getElementById('feeType');
+      const toggle = document.getElementById('feeTypeToggle');
+      const menu = document.getElementById('feeTypeMenu');
+
+      // Toggle the dropdown menu
+      toggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menu.classList.toggle('open');
+      });
+
+      // Click a menu option -> fill the input
+      menu.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          input.value = btn.getAttribute('data-value');
+          menu.classList.remove('open');
+          input.focus();
+        });
+      });
+
+      // Close the menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!wrap.contains(e.target)) {
+          menu.classList.remove('open');
+        }
+      });
+
+      // Close menu on Escape
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          menu.classList.remove('open');
+        }
+      });
+    }
+
+    // ================= STATE =================
+    let currentClassStudents = [];
+    let selectedRegNos = new Set();
+    let studentAmounts = new Map(); // regNo -> amount
+
+    // ================= INITIALIZATION HELPERS =================
+    function populateMonthsDropdown() {
+      const monthSelect = document.getElementById('feeMonthSelect');
+      const yearInput = document.getElementById('feeYearInput');
+
+      const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonthIdx = now.getMonth();
+
+      // --- Populate Month dropdown (all 12 months) ---
+      monthSelect.innerHTML = '';
+      monthNames.forEach((name, idx) => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        if (idx === currentMonthIdx) opt.selected = true;
+        monthSelect.appendChild(opt);
+      });
+
+      // --- Set Year input to current year (read-only, auto-updates) ---
+      yearInput.value = currentYear;
+
+      // --- Sync hidden #feeMonth input ---
+      syncFeeMonth();
+    }
+
+    // Keep the hidden #feeMonth input in sync with month + year
+    function syncFeeMonth() {
+      const month = document.getElementById('feeMonthSelect').value;
+      const year = document.getElementById('feeYearInput').value;
+      const combined = `${month} ${year}`;
+
+      const hiddenInput = document.getElementById('feeMonth');
+      hiddenInput.value = combined;
+
+      // Trigger existing logic that depends on feeMonth
+      updateStudentFeeStatuses();
+    }
+
+    function populateClassDropdown() {
+      const classSelect = document.getElementById('classSelect');
+      const classes = loadClasses();
+      classSelect.innerHTML = '<option value="">-- Select Class --</option>';
+
+      classes.forEach(cls => {
+        const opt = document.createElement('option');
+        opt.value = cls.id;
+        opt.textContent = `${cls.name} (${cls.grade} - Sec ${cls.section})`;
+        classSelect.appendChild(opt);
+      });
+    }
+
+    // ================= CLASS SELECTION =================
+    function onClassChange() {
+      const classId = document.getElementById('classSelect').value;
+      const classes = loadClasses();
+      const selectedClass = classes.find(c => c.id === classId);
+
+      const studentsCard = document.getElementById('studentsCard');
+
+      if (!selectedClass) {
+        document.getElementById('s_classId').value = '';
+        document.getElementById('s_session').value = '';
+        document.getElementById('s_grade').value = '';
+        document.getElementById('s_section').value = '';
+        studentsCard.style.display = 'none';
+        currentClassStudents = [];
+        selectedRegNos.clear();
+        studentAmounts.clear();
+        return;
+      }
+
+      document.getElementById('s_classId').value = selectedClass.id;
+      document.getElementById('s_session').value = selectedClass.session || '—';
+      document.getElementById('s_grade').value = selectedClass.grade || '—';
+      document.getElementById('s_section').value = selectedClass.section || '—';
+
+      document.getElementById('classNameBadge').textContent = selectedClass.name;
+      studentsCard.style.display = 'block';
+
+      const allStudents = loadStudents();
+      currentClassStudents = allStudents.filter(s => s.classId === classId);
+
+      const defaultAmt = parseFloat(document.getElementById('bulkAmount').value) || 4500;
+
+      selectedRegNos.clear();
+      studentAmounts.clear();
+
+      currentClassStudents.forEach(s => {
+        studentAmounts.set(s.regNo, defaultAmt);
+      });
+
+      renderStudentTable();
+      updateSelectionUI();
+    }
+
+    // ================= RENDER STUDENTS TABLE =================
+    function renderStudentTable(filterText = '') {
+      const tbody = document.getElementById('studentTableBody');
+      const noNotice = document.getElementById('noStudentsNotice');
+      const search = filterText.toLowerCase().trim();
+
+      if (currentClassStudents.length === 0) {
+        tbody.innerHTML = '';
+        noNotice.style.display = 'block';
+        return;
+      }
+      noNotice.style.display = 'none';
+
+      const filtered = currentClassStudents.filter(s => {
+        if (!search) return true;
+        return (
+          (s.studentName && s.studentName.toLowerCase().includes(search)) ||
+          (s.regNo && s.regNo.toLowerCase().includes(search)) ||
+          (s.fatherName && s.fatherName.toLowerCase().includes(search))
+        );
+      });
+
+      tbody.innerHTML = filtered.map(student => {
+        const isSelected = selectedRegNos.has(student.regNo);
+        const amount = studentAmounts.get(student.regNo) ?? 4500;
+
+        return `
+          <tr class="${isSelected ? 'selected-row' : ''}" id="row-${student.regNo}">
+            <td style="text-align:center;">
+              <input type="checkbox" class="student-checkbox" 
+                     data-regno="${student.regNo}" 
+                     ${isSelected ? 'checked' : ''} 
+                     onchange="onStudentCheckboxChange('${student.regNo}', this.checked)">
+            </td>
+            <td><strong>${student.regNo}</strong></td>
+            <td>${student.studentName}</td>
+            <td>${student.fatherName || '—'}</td>
+            <td>
+              <input type="number" class="fee-input" min="0" step="50" 
+                     value="${amount}" 
+                     data-regno="${student.regNo}"
+                     oninput="onStudentAmountChange('${student.regNo}', this.value)">
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      updateSelectionUI();
+    }
+
+    // ================= SELECTION LOGIC =================
+    function onStudentCheckboxChange(regNo, isChecked) {
+      if (isChecked) {
+        selectedRegNos.add(regNo);
+      } else {
+        selectedRegNos.delete(regNo);
+      }
+      const row = document.getElementById(`row-${regNo}`);
+      if (row) {
+        if (isChecked) row.classList.add('selected-row');
+        else row.classList.remove('selected-row');
+      }
+      updateSelectionUI();
+    }
+
+    function onStudentAmountChange(regNo, val) {
+      const num = parseFloat(val) || 0;
+      studentAmounts.set(regNo, num);
+    }
+
+    function toggleSelectAllCheckbox(isChecked) {
+      selectAllStudents(isChecked);
+    }
+
+    function selectAllStudents(select) {
+      if (select) {
+        currentClassStudents.forEach(s => selectedRegNos.add(s.regNo));
+      } else {
+        selectedRegNos.clear();
+      }
+      renderStudentTable(document.getElementById('studentSearchInput').value);
+    }
+
+    function invertSelection() {
+      currentClassStudents.forEach(s => {
+        if (selectedRegNos.has(s.regNo)) {
+          selectedRegNos.delete(s.regNo);
+        } else {
+          selectedRegNos.add(s.regNo);
+        }
+      });
+      renderStudentTable(document.getElementById('studentSearchInput').value);
+    }
+
+    function filterClassStudents() {
+      const text = document.getElementById('studentSearchInput').value;
+      renderStudentTable(text);
+    }
+
+    function updateSelectionUI() {
+      const selectedCount = selectedRegNos.size;
+      const totalCount = currentClassStudents.length;
+
+      document.getElementById('selectionSummaryBadge').textContent = `${selectedCount} / ${totalCount} Selected`;
+      document.getElementById('btnSelectedCount').textContent = selectedCount;
+      document.getElementById('btnSubmitCount').textContent = selectedCount;
+
+      const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+      if (selectAllCheckbox) {
+        if (totalCount === 0) {
+          selectAllCheckbox.checked = false;
+          selectAllCheckbox.indeterminate = false;
+        } else if (selectedCount === totalCount) {
+          selectAllCheckbox.checked = true;
+          selectAllCheckbox.indeterminate = false;
+        } else if (selectedCount > 0) {
+          selectAllCheckbox.checked = false;
+          selectAllCheckbox.indeterminate = true;
+        } else {
+          selectAllCheckbox.checked = false;
+          selectAllCheckbox.indeterminate = false;
+        }
+      }
+    }
+
+    // ================= BULK AMOUNT APPLICATOR =================
+    function applyBulkAmountToSelected() {
+      const amt = parseFloat(document.getElementById('bulkAmount').value);
+      if (isNaN(amt) || amt <= 0) {
+        showToast('⚠️ Please enter a valid bulk amount greater than 0');
+        return;
+      }
+      if (selectedRegNos.size === 0) {
+        showToast('⚠️ Please select at least one student first');
+        return;
+      }
+
+      selectedRegNos.forEach(regNo => {
+        studentAmounts.set(regNo, amt);
+      });
+
+      renderStudentTable(document.getElementById('studentSearchInput').value);
+      showSuccessToast(`PKR ${amt.toLocaleString()} applied to ${selectedRegNos.size} selected student(s)`);
+    }
+
+    function applyBulkAmountToAll() {
+      const amt = parseFloat(document.getElementById('bulkAmount').value);
+      if (isNaN(amt) || amt <= 0) {
+        showToast('⚠️ Please enter a valid bulk amount greater than 0');
+        return;
+      }
+      if (currentClassStudents.length === 0) {
+        showToast('⚠️ No students enrolled in this class');
+        return;
+      }
+
+      currentClassStudents.forEach(s => {
+        studentAmounts.set(s.regNo, amt);
+      });
+
+      renderStudentTable(document.getElementById('studentSearchInput').value);
+      showSuccessToast(`PKR ${amt.toLocaleString()} applied to all ${currentClassStudents.length} student(s) in class`);
+    }
+
+    function updateStudentFeeStatuses() {
+      renderStudentTable(document.getElementById('studentSearchInput').value);
+    }
+
+    // ================= ASSIGN FEE (LOCAL STORAGE) =================
+    function assignFeeToSelectedStudents() {
+      const classId = document.getElementById('classSelect').value;
+      const feeType = document.getElementById('feeType').value.trim();
+      const feeMonth = document.getElementById('feeMonth').value;
+      const dueDate = document.getElementById('dueDate').value;
+
+      if (!classId) {
+        showToast('⚠️ Please select a class');
+        return;
+      }
+      if (!feeType) {
+        showToast('⚠️ Please enter or select a fee type');
+        return;
+      }
+      if (!feeMonth) {
+        showToast('⚠️ Please select fee month & year');
+        return;
+      }
+      if (!dueDate) {
+        showToast('⚠️ Please pick a due date');
+        return;
+      }
+
+      if (selectedRegNos.size === 0) {
+        showToast('⚠️ Please select at least one student by checking their box');
+        return;
+      }
+
+      let invalidAmounts = false;
+      selectedRegNos.forEach(regNo => {
+        const amt = studentAmounts.get(regNo);
+        if (!amt || amt <= 0) invalidAmounts = true;
+      });
+
+      if (invalidAmounts) {
+        showToast('⚠️ All selected students must have a fee amount greater than 0');
+        return;
+      }
+
+      const classes = loadClasses();
+      const selectedClass = classes.find(c => c.id === classId);
+      const allStudents = loadStudents();
+      const feeRecords = loadFeeRecords();
+
+      let createdCount = 0;
+      let skippedPaidCount = 0;
+      let skippedExistingCount = 0;
+
+      const nowTime = new Date().toLocaleString('en-PK', { hour12: true });
+
+      selectedRegNos.forEach(regNo => {
+        const student = allStudents.find(s => s.regNo === regNo && s.classId === classId);
+        if (!student) return;
+
+        const amount = studentAmounts.get(regNo);
+
+        const existingIndex = feeRecords.findIndex(r =>
+          r.regNo === student.regNo &&
+          r.classId === classId &&
+          r.feeType === feeType &&
+          r.feeMonth === feeMonth
+        );
+
+        if (existingIndex !== -1) {
+          const existing = feeRecords[existingIndex];
+          if (existing.status === 'Paid') {
+            skippedPaidCount++;
+          } else {
+            skippedExistingCount++;
+          }
+        } else {
+          const newId = 'FEE-' + Date.now() + '-' + Math.floor(Math.random() * 90000 + 10000);
+          feeRecords.push({
+            id: newId,
+            regNo: student.regNo,
+            studentName: student.studentName,
+            fatherName: student.fatherName || '',
+            photoUrl: student.photoUrl || null,
+            className: selectedClass.name,
+            classId: classId,
+            session: selectedClass.session || '',
+            grade: selectedClass.grade || '',
+            section: selectedClass.section || '',
+            feeType: feeType,
+            feeMonth: feeMonth,
+            dueDate: dueDate,
+            amount: amount,
+            description: '',
+            status: 'Unpaid',
+            paidDateTime: null,
+            receiptNo: null,
+            assignedAt: nowTime
+          });
+          createdCount++;
+        }
+      });
+
+      saveFeeRecords(feeRecords);
+
+      // Build a single, clean message
+      let msg = '';
+      if (createdCount > 0) {
+        msg = `Fee assigned successfully to ${createdCount} student${createdCount !== 1 ? 's' : ''}`;
+        if (skippedExistingCount > 0) {
+          msg += ` — ${skippedExistingCount} already assigned`;
+        }
+        if (skippedPaidCount > 0) {
+          msg += `, ${skippedPaidCount} already paid (preserved)`;
+        }
+        showSuccessToast(msg);
+      } else if (skippedExistingCount > 0 || skippedPaidCount > 0) {
+        // Nothing new, but show info toast
+        let infoMsg = '';
+        if (skippedExistingCount > 0) infoMsg += `${skippedExistingCount} already assigned. `;
+        if (skippedPaidCount > 0) infoMsg += `${skippedPaidCount} already marked Paid (preserved).`;
+        showToast('ℹ️ ' + infoMsg.trim());
+      } else {
+        showToast('⚠️ No changes made.');
+      }
+
+      renderStudentTable(document.getElementById('studentSearchInput').value);
+    }
+
+    function resetForm() {
+      selectedRegNos.clear();
+      const defaultAmt = parseFloat(document.getElementById('bulkAmount').value) || 4500;
+      currentClassStudents.forEach(s => studentAmounts.set(s.regNo, defaultAmt));
+      document.getElementById('studentSearchInput').value = '';
+      renderStudentTable();
+      showToast('Form selections reset');
+    }
+  </script>
+</body>
+</html>

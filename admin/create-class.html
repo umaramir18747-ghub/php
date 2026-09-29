@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEI – Create a Class</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../components.css">
+  <link rel="stylesheet" href="../responsive-components.css">
+  <style>
+    /* ============================================
+       INTERNAL CSS - Unified Design System
+       Based on: enroll.css / fee.css / view-details.css
+       Blue Theme | Full Width | Responsive
+       ============================================ */
+
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, Roboto, sans-serif;
+    }
+
+    body {
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    /* ===== MAIN PANEL ===== */
+    .main-panel {
+      flex: 1;
+      padding: 40px 32px;
+      background: #f8fafc;
+      min-height: calc(100vh - 70px);
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: white;
+      padding: 24px 32px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e9eef3;
+    }
+
+    .page-header .header-content h1 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .page-header .header-content h1 i {
+      color: #2563eb;
+      background: none;
+      -webkit-text-fill-color: #2563eb;
+    }
+
+    .page-header .header-content p {
+      color: #475569;
+      margin-top: 8px;
+      font-size: 15px;
+      border-left: 3px solid #3b82f6;
+      padding-left: 16px;
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: white;
+      padding: 40px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.07);
+      border: 1px solid #f1f5f9;
+      margin-bottom: 28px;
+    }
+
+    .card-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-title i {
+      color: #2563eb;
+      font-size: 22px;
+    }
+
+    /* ===== GRID LAYOUTS ===== */
+    .form-grid-3cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .form-grid-2cols {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .form-grid-full {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    /* ===== FORM GROUPS ===== */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group label {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group label i {
+      color: #2563eb;
+      width: 18px;
+      text-align: center;
+    }
+
+    .req {
+      color: #ef4444;
+      margin-left: 3px;
+    }
+
+    /* ===== FORM CONTROLS ===== */
+    .form-control {
+      padding: 14px 16px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 0;
+      font-size: 15.2px;
+      color: #1e293b;
+      transition: all 0.25s;
+      background: white;
+      width: 100%;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+    }
+
+    .form-control:disabled {
+      background: #f8fafc;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+
+    .form-control[readonly] {
+      background: #f8fafc;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+
+    select.form-control {
+      cursor: pointer;
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 40px;
+      padding-top: 28px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .btn {
+      padding: 13px 28px;
+      border: none;
+      border-radius: 0;
+      font-size: 15.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+    }
+
+    .btn i {
+      color: inherit;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-primary i {
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-secondary {
+      background: #f8fafc;
+      color: #334155;
+      border: 1.5px solid #e2e8f0;
+    }
+
+    .btn-secondary i {
+      color: #2563eb;
+    }
+
+    .btn-secondary:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    /* ===== TOAST NOTIFICATIONS ===== */
+    .toast-msg {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1e293b;
+      color: white;
+      padding: 16px 28px;
+      border-radius: 0;
+      font-size: 15px;
+      font-weight: 500;
+      z-index: 9999;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideUp 0.35s ease;
+    }
+
+    .toast-msg i {
+      color: #3b82f6;
+      font-size: 20px;
+    }
+
+    .toast-msg.toast-success {
+      background: #065f46;
+    }
+
+    .toast-msg.toast-success i {
+      color: #6ee7b7;
+    }
+
+    @keyframes slideUp {
+      0% { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== RESPONSIVE BREAKPOINTS ===== */
+
+    /* ===== LARGE DESKTOP (1200px and below) ===== */
+    @media (max-width: 1200px) {
+      .form-grid-3cols {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ===== TABLET / SMALL DESKTOP (992px and below) ===== */
+    @media (max-width: 992px) {
+      .main-panel {
+        padding: 32px 24px;
+      }
+
+      .page-header {
+        padding: 20px 24px;
+      }
+
+      .page-header .header-content h1 {
+        font-size: 24px;
+      }
+
+      .page-header .header-content p {
+        font-size: 14px;
+      }
+
+      .card {
+        padding: 32px 24px;
+      }
+
+      .card-title {
+        font-size: 17px;
+      }
+    }
+
+    /* ===== MOBILE (768px and below) ===== */
+    @media (max-width: 768px) {
+      .main-panel {
+        padding: 24px 20px;
+      }
+
+      .page-header {
+        padding: 20px 24px;
+      }
+
+      .page-header .header-content h1 {
+        font-size: 22px;
+      }
+
+      .page-header .header-content p {
+        font-size: 14px;
+        padding-left: 12px;
+      }
+
+      .card {
+        padding: 24px;
+      }
+
+      .card-title {
+        font-size: 17px;
+      }
+
+      /* All grids become single column */
+      .form-grid-3cols,
+      .form-grid-2cols {
+        grid-template-columns: 1fr;
+      }
+
+      .btn-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        justify-content: center;
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+
+      .form-control {
+        padding: 12px 14px;
+        font-size: 14px;
+      }
+
+      .form-group label {
+        font-size: 13.5px;
+      }
+
+      .form-group label i {
+        width: 16px;
+        font-size: 14px;
+      }
+
+      .toast-msg {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        padding: 14px 20px;
+        font-size: 14px;
+        text-align: center;
+        justify-content: center;
+      }
+    }
+
+    /* ===== SMALL MOBILE (480px and below) ===== */
+    @media (max-width: 480px) {
+      .main-panel {
+        padding: 16px 12px;
+      }
+
+      .page-header {
+        padding: 16px 18px;
+      }
+
+      .page-header .header-content h1 {
+        font-size: 19px;
+      }
+
+      .page-header .header-content p {
+        font-size: 13px;
+        padding-left: 10px;
+      }
+
+      .card {
+        padding: 18px 16px;
+      }
+
+      .card-title {
+        font-size: 15px;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+      }
+
+      .card-title i {
+        font-size: 18px;
+      }
+
+      .form-control {
+        padding: 10px 12px;
+        font-size: 13.5px;
+      }
+
+      .btn {
+        padding: 10px 16px;
+        font-size: 13px;
+        gap: 6px;
+      }
+
+      .btn-actions {
+        gap: 10px;
+        margin-top: 28px;
+        padding-top: 20px;
+      }
+
+      .req {
+        font-size: 12px;
+      }
+
+      .toast-msg {
+        padding: 12px 16px;
+        font-size: 13px;
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+      }
+
+      .form-group label i {
+        width: 14px;
+        font-size: 13px;
+      }
+    }
+
+    /* ===== PRINT STYLES ===== */
+    @media print {
+      .btn-actions {
+        display: none;
+      }
+      .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+      .page-header {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header will be loaded here -->
+  <div id="header-placeholder"></div>
+
+  <div class="app-wrapper" id="appWrapper">
+    <!-- Sidebar will be loaded here -->
+    <div id="sidebar-placeholder"></div>
+
+    <main class="main-panel">
+      <div class="page-header">
+  <div class="header-content">
+    <h1>
+      <i class="fas fa-chalkboard icon"></i>
+      <span id="pageTitleText">Create a Class</span>
+    </h1>
+    <p id="pageSubtitle">Create a new class, generate its ID automatically, and assign it to a session, grade, and section.</p>
+  </div>
+</div>
+
+      <div class="card">
+        <div class="card-title">
+          <i class="fas fa-info-circle"></i> Class Configuration
+          <span id="editLockNotice" style="display:none; font-size:12px; font-weight:600; color:#b45309; background:#fef3c7; padding:4px 10px; border-radius:6px;">
+            <i class="fas fa-lock"></i> Promote Mode: Only Grade can be updated
+          </span>
+        </div>
+
+        <form id="classForm" onsubmit="handleClassSubmit(event)">
+          <div class="form-grid-2cols">
+            <div class="form-group">
+              <label><i class="fas fa-chalkboard"></i> Class Name <span class="req">*</span></label>
+              <input type="text" class="form-control" id="className" placeholder="Set Class Name" oninput="updateClassId()" required>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-id-card"></i> Class ID <span class="req">*</span></label>
+              <input type="text" class="form-control" id="classId" placeholder="Auto-generated" readonly required>
+            </div>
+          </div>
+
+          <div class="form-grid-3cols" style="margin-top: 20px;">
+            <div class="form-group">
+              <label><i class="fas fa-calendar-alt"></i> Academic Session <span class="req">*</span></label>
+              <input type="text" class="form-control" id="session" placeholder="XXXX-XXXX" maxlength="9" required>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-layer-group"></i> Grade Level <span class="req">*</span></label>
+              <select class="form-control" id="grade" required>
+                <option value="">-- Select Grade --</option>
+                <option>Pre-Nursery</option>
+                <option>Nursery</option>
+                <option>Post-Nursery</option>
+                <option>Grade 1</option>
+                <option>Grade 2</option>
+                <option>Grade 3</option>
+                <option>Grade 4</option>
+                <option>Grade 5</option>
+                <option>Grade 6</option>
+                <option>Grade 7</option>
+                <option>Grade 8</option>
+                <option>Pre-9</option>
+                <option>Grade 9</option>
+                <option>Grade 10</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-tags"></i> Section <span class="req">*</span></label>
+              <input type="text" class="form-control" id="section" placeholder="A, B, or C ..." maxlength="4" required>
+            </div>
+          </div>
+
+          <div class="form-grid-full">
+            <div class="form-group">
+              <label><i class="fas fa-align-left"></i> Description <span style="color:#64748b;font-weight:400;">(Optional)</span></label>
+              <textarea class="form-control" id="description" rows="3" placeholder="Additional details, shift timing, teacher in-charge..."></textarea>
+            </div>
+          </div>
+
+          <div class="btn-actions">
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              <i class="fas fa-save"></i> Save Class
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="resetClassForm()">
+              <i class="fas fa-undo"></i> Reset
+            </button>
+            <a href="class-details.html" class="btn btn-secondary">
+              <i class="fas fa-eye"></i> View All Classes
+            </a>
+            <a href="dashboard.html" class="btn btn-secondary">
+              <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script src="../components.js"></script>
+  <script>
+    let editingClassId = null;
+
+    // ================= COMPONENT LOADING (HEADER & SIDEBAR) =================
+    function loadComponents() {
+      // Load Header
+      fetch('header.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('header-placeholder').innerHTML = data;
+        })
+        .catch(err => console.error('Error loading header:', err));
+
+      // Load Sidebar
+      fetch('sidebar.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('sidebar-placeholder').innerHTML = data;
+        })
+        .catch(err => console.error('Error loading sidebar:', err));
+    }
+
+    // ================= STORAGE HELPERS =================
+    function loadClasses() {
+      try {
+        const stored = localStorage.getItem('messClasses');
+        return stored ? JSON.parse(stored) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveClasses(classes) {
+      localStorage.setItem('messClasses', JSON.stringify(classes));
+    }
+
+    function loadStudents() {
+      try {
+        const stored = localStorage.getItem('messStudents');
+        return stored ? JSON.parse(stored) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveStudents(students) {
+      localStorage.setItem('messStudents', JSON.stringify(students));
+    }
+
+    // ================= TOAST HELPERS =================
+    // Generic info/warning toast (blue info icon)
+    function showToast(msg) {
+      let t = document.createElement('div');
+      t.className = 'toast-msg';
+      t.innerHTML = `<i class="fas fa-info-circle"></i> ${msg}`;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2400);
+    }
+
+    // Success toast (green style) — used for class created / promoted
+    function showSuccessToast(msg) {
+      let t = document.createElement('div');
+      t.className = 'toast-msg toast-success';
+      t.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2600);
+    }
+
+    // Initialize everything after components are loaded
+    window.addEventListener('load', function() {
+      loadComponents();
+
+      // Give time for HTML to load then initialize JS
+      setTimeout(() => {
+        if (typeof window.initHeaderAndSidebar === 'function') {
+          window.initHeaderAndSidebar();
+        }
+      }, 400);
+
+      // Existing page initialization
+      attachSessionFormatter();
+
+      const params = new URLSearchParams(window.location.search);
+      const editId = params.get('edit');
+      if (editId) {
+        enterPromoteMode(editId);
+      }
+    });
+
+    function generateClassId(name) {
+      if (!name || !name.trim()) return '';
+      let base = name.trim().toUpperCase().replace(/[^A-Z0-9\s]/g, '');
+      const words = base.split(/\s+/);
+      let shortId = '';
+      if (words.length === 1) {
+        shortId = words[0].substring(0, 3);
+      } else {
+        const max = Math.min(words.length, 3);
+        for (let i = 0; i < max; i++) shortId += words[i].charAt(0);
+      }
+      const randomNum = Math.floor(Math.random() * 900) + 100;
+      return `CLS-${shortId}-${randomNum}`;
+    }
+
+    function updateClassId() {
+      if (editingClassId) return;
+      const name = document.getElementById('className').value.trim();
+      const idInput = document.getElementById('classId');
+      if (!name) {
+        idInput.value = '';
+        return;
+      }
+      idInput.value = generateClassId(name);
+    }
+
+    function attachSessionFormatter() {
+      const sessionInput = document.getElementById('session');
+      if (!sessionInput) return;
+      sessionInput.addEventListener('input', function() {
+        let digits = this.value.replace(/\D/g, '').substring(0, 8);
+        if (digits.length > 4) {
+          this.value = digits.substring(0, 4) + '-' + digits.substring(4);
+        } else if (digits.length === 4) {
+          this.value = digits + '-';
+        } else {
+          this.value = digits;
+        }
+      });
+    }
+
+    function enterPromoteMode(classId) {
+      const classes = loadClasses();
+      const cls = classes.find(c => c.id === classId);
+      if (!cls) {
+        showToast('⚠️ Class not found');
+        return;
+      }
+
+      editingClassId = classId;
+      document.getElementById('pageTitleText').textContent = 'Promote Class';
+      document.getElementById('pageSubtitle').textContent = `Promote "${cls.name}" to the next grade. All enrolled students will automatically be promoted.`;
+      document.getElementById('submitBtn').innerHTML = '<i class="fas fa-arrow-up"></i> Promote Class';
+      document.getElementById('editLockNotice').style.display = 'inline-block';
+
+      const nameInput = document.getElementById('className');
+      nameInput.value = cls.name;
+      nameInput.readOnly = true;
+
+      const idInput = document.getElementById('classId');
+      idInput.value = cls.id;
+
+      const sessionInput = document.getElementById('session');
+      sessionInput.value = cls.session || '';
+      sessionInput.readOnly = true;
+
+      const sectionInput = document.getElementById('section');
+      sectionInput.value = cls.section || '';
+      sectionInput.readOnly = true;
+
+      document.getElementById('grade').value = cls.grade || '';
+      document.getElementById('description').value = cls.description || '';
+    }
+
+    function handleClassSubmit(e) {
+      e.preventDefault();
+
+      const className = document.getElementById('className').value.trim();
+      const classId = document.getElementById('classId').value.trim();
+      const session = document.getElementById('session').value.trim();
+      const grade = document.getElementById('grade').value;
+      const section = document.getElementById('section').value.trim().toUpperCase();
+      const description = document.getElementById('description').value.trim();
+
+      if (!className || !classId || !session || !grade || !section) {
+        showToast('⚠️ Please fill all required fields');
+        return;
+      }
+
+      const classes = loadClasses();
+
+      // EDIT / PROMOTE MODE
+      if (editingClassId) {
+        const idx = classes.findIndex(c => c.id === editingClassId);
+        if (idx === -1) {
+          showToast('⚠️ Class record not found');
+          return;
+        }
+
+        const oldGrade = classes[idx].grade;
+        classes[idx].grade = grade;
+        classes[idx].description = description;
+
+        saveClasses(classes);
+
+        // Cascade grade promotion to students
+        let studentCount = 0;
+        if (oldGrade !== grade) {
+          const students = loadStudents();
+          students.forEach(s => {
+            if (s.classId === editingClassId) {
+              s.grade = grade;
+              studentCount++;
+            }
+          });
+          saveStudents(students);
+        }
+
+        if (oldGrade !== grade) {
+          showSuccessToast(`Class promoted to ${grade} — ${studentCount} student(s) updated`);
+        } else {
+          showSuccessToast(`Class details updated successfully`);
+        }
+
+        setTimeout(() => {
+          window.location.href = 'class-details.html';
+        }, 1000);
+        return;
+      }
+
+      // CREATE MODE
+      if (classes.some(c => c.id.toLowerCase() === classId.toLowerCase())) {
+        showToast(`⚠️ Class ID "${classId}" already exists`);
+        return;
+      }
+
+      const newClass = {
+        id: classId,
+        name: className,
+        session: session,
+        grade: grade,
+        section: section,
+        description: description,
+        status: 'Active',
+        createdDate: new Date().toLocaleString('en-PK', { hour12: true })
+      };
+
+      classes.push(newClass);
+      saveClasses(classes);
+      showSuccessToast(`Class "${className}" is created successfully`);
+      resetClassForm();
+    }
+
+    function resetClassForm() {
+      if (editingClassId) {
+        window.location.href = 'class-details.html';
+        return;
+      }
+      document.getElementById('classForm').reset();
+      document.getElementById('classId').value = '';
+    }
+  </script>
+</body>
+</html>

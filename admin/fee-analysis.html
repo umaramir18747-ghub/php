@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>MEI – Fee Analysis Dashboard</title>
+  <link rel="icon" type="image/png" href="../logo2.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../components.css">
+  <link rel="stylesheet" href="../responsive-components.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- XLSX Library for Excel Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    /* ============================================
+       INTERNAL CSS - Unified Design System
+       Based on: assign-fee.html / mark-payment.html / view-fee-details.html
+       Blue Theme | Full Width | Responsive
+       ============================================ */
+
+    /* ===== RESET & GLOBAL ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    }
+
+    body {
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    .app-wrapper {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* ===== MAIN PANEL ===== */
+    .main-panel {
+      flex: 1;
+      padding: 32px;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      background: #f8fafc;
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: white;
+      padding: 24px 32px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e9eef3;
+      width: 100%;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .page-header h1 i {
+      color: #2563eb;
+      background: none;
+      -webkit-text-fill-color: #2563eb;
+    }
+
+    .page-header p {
+      color: #475569;
+      margin-top: 8px;
+      font-size: 15px;
+      border-left: 3px solid #3b82f6;
+      padding-left: 16px;
+    }
+
+    /* ===== STATS CARDS ROW ===== */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: white;
+      border: 1px solid #edf2f7;
+      padding: 20px 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.1);
+      border-color: #93c5fd;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      border: 1px solid;
+    }
+
+    .stat-icon.blue { background: #eef2ff; color: #2563eb; border-color: #dbeafe; }
+    .stat-icon.green { background: #d1fae5; color: #16a34a; border-color: #a7f3d0; }
+    .stat-icon.red { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
+    .stat-icon.amber { background: #fef3c7; color: #d97706; border-color: #fde68a; }
+    .stat-icon.purple { background: #ede9fe; color: #7c3aed; border-color: #ddd6fe; }
+
+    .stat-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1e293b;
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    /* ===== FILTER SECTION ===== */
+    .filter-section {
+      background: white;
+      border: 1px solid #edf2f7;
+      padding: 20px 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .filter-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .filter-dropdown {
+      padding: 12px 16px;
+      border: 1px solid #dbeafe;
+      background: white;
+      color: #1e293b;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232563eb' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    .filter-dropdown:hover {
+      border-color: #93c5fd;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    }
+
+    .filter-dropdown:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .export-btn {
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+      white-space: nowrap;
+      align-self: flex-end;
+    }
+
+    .export-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    }
+
+    .export-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .export-progress {
+      display: none;
+      text-align: center;
+      padding: 16px;
+      background: #eef2ff;
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+
+    .export-progress.show {
+      display: block;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: #dbeafe;
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2563eb, #1e40af);
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    /* ===== DATA CARD ===== */
+    .data-card {
+      background: white;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+      border: 1px solid #edf2f7;
+      overflow: hidden;
+      width: 100%;
+      margin-bottom: 28px;
+    }
+
+    .card-header {
+      padding: 20px 28px;
+      background: #fefefe;
+      border-bottom: 1px solid #eef2f8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .card-header h2 {
+      font-size: 19px;
+      font-weight: 700;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-header h2 i {
+      color: #2563eb;
+      font-size: 20px;
+    }
+
+    /* ===== CHART TOGGLE / FILTER CONTROLS ===== */
+    .chart-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .chart-toggle {
+      display: flex;
+      border: 1.5px solid #e2e8f0;
+      overflow: hidden;
+    }
+
+    .chart-toggle button {
+      padding: 8px 18px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      background: white;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chart-toggle button.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    .chart-toggle button:hover:not(.active) {
+      background: #f1f5f9;
+    }
+
+    .chart-toggle button i { font-size: 11px; }
+
+    /* ===== FILTER DROPDOWN ===== */
+    .filter-wrapper {
+      position: relative;
+      min-width: 180px;
+    }
+
+    .filter-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 13px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .filter-select {
+      width: 100%;
+      padding: 8px 32px 8px 34px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 0;
+      font-size: 13px;
+      color: #1e293b;
+      background: white;
+      cursor: pointer;
+      transition: all 0.25s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      font-family: inherit;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    /* ============================================
+       CHART GRID
+       ============================================ */
+    .chart-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 24px;
+      padding: 24px 28px 28px;
+    }
+
+    .chart-card {
+      background: white;
+      border: 1.5px solid #e2e8f0;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .chart-card:hover {
+      border-color: #93c5fd;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.08);
+    }
+
+    .chart-card-header {
+      padding: 16px 20px;
+      background: #fefefe;
+      border-bottom: 1px solid #eef2f8;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .chart-card-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .chart-card-icon {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eef2ff;
+      color: #2563eb;
+      font-size: 16px;
+      flex-shrink: 0;
+      border: 1px solid #dbeafe;
+    }
+
+    .chart-card-header h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.3;
+    }
+
+    .chart-card-header .sub {
+      font-size: 11.5px;
+      color: #64748b;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .chart-card-body {
+      padding: 18px 20px 20px;
+      height: 320px;
+      position: relative;
+    }
+
+    .chart-card-body canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .chart-full {
+      grid-column: 1 / -1;
+    }
+
+    .chart-full .chart-card-body {
+      height: 400px;
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .chart-empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #94a3b8;
+      gap: 8px;
+    }
+
+    .chart-empty-state i {
+      font-size: 36px;
+      color: #93c5fd;
+    }
+
+    .chart-empty-state p {
+      font-size: 13px;
+      font-weight: 500;
+      color: #64748b;
+    }
+
+    /* ===== TOAST ===== */
+    .toast-msg {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1e293b;
+      color: white;
+      padding: 16px 28px;
+      font-size: 15px;
+      font-weight: 500;
+      z-index: 2200;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideUp 0.35s ease;
+      max-width: 480px;
+      border-radius: 0;
+    }
+
+    .toast-msg i { color: #3b82f6; font-size: 20px; }
+
+    @keyframes slideUp {
+      0% { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 1024px) {
+      .main-panel { padding: 24px 20px; }
+      .page-header { padding: 20px 24px; }
+      .page-header h1 { font-size: 24px; }
+      .page-header p { font-size: 14px; }
+      .card-header { padding: 16px 20px; }
+      .card-header h2 { font-size: 17px; }
+      .chart-grid-2 { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); padding: 18px 20px 22px; }
+      .chart-card-body { height: 290px; }
+      .chart-full .chart-card-body { height: 360px; }
+    }
+
+    @media (max-width: 768px) {
+      .main-panel { padding: 20px 16px; }
+      .page-header { padding: 18px 20px; }
+      .page-header h1 { font-size: 21px; gap: 10px; }
+      .page-header p { font-size: 13.5px; padding-left: 12px; margin-top: 6px; }
+      .card-header {
+        padding: 14px 16px;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .card-header h2 { font-size: 16px; flex-wrap: wrap; }
+      .chart-controls { width: 100%; }
+      .chart-toggle { width: 100%; }
+      .chart-toggle button { flex: 1; justify-content: center; padding: 8px 10px; font-size: 11px; }
+      .filter-wrapper { width: 100%; min-width: 0; }
+
+      .stats-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .stat-card { padding: 14px 16px; gap: 12px; }
+      .stat-icon { width: 40px; height: 40px; font-size: 17px; }
+      .stat-value { font-size: 18px; }
+      .stat-label { font-size: 11px; }
+
+      .filter-section {
+        flex-direction: column;
+        gap: 12px;
+        padding: 14px 16px;
+      }
+      .filter-group {
+        width: 100%;
+        min-width: 100%;
+      }
+      .export-btn {
+        width: 100%;
+        justify-content: center;
+        align-self: auto;
+      }
+
+      .chart-grid-2 { grid-template-columns: 1fr; padding: 14px 16px 18px; gap: 16px; }
+      .chart-card-body { height: 260px; padding: 14px 14px 16px; }
+      .chart-full .chart-card-body { height: 320px; }
+      .chart-card-header { padding: 12px 14px; }
+      .chart-card-icon { width: 32px; height: 32px; font-size: 14px; }
+      .chart-card-header h3 { font-size: 13.5px; }
+      .chart-card-header .sub { font-size: 10.5px; }
+
+      .toast-msg {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        padding: 14px 20px;
+        font-size: 14px;
+        justify-content: center;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .main-panel { padding: 16px 12px; }
+      .page-header { padding: 14px 16px; }
+      .page-header h1 { font-size: 18px; gap: 8px; }
+      .page-header h1 i { font-size: 17px; }
+      .page-header p { font-size: 12.5px; padding-left: 10px; }
+      .card-header { padding: 12px 14px; }
+      .card-header h2 { font-size: 14px; gap: 8px; }
+
+      .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .stat-card { padding: 10px 12px; gap: 8px; }
+      .stat-icon { width: 34px; height: 34px; font-size: 14px; }
+      .stat-value { font-size: 15px; }
+      .stat-label { font-size: 9.5px; }
+
+      .filter-section {
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px 16px;
+      }
+      .filter-group {
+        width: 100%;
+        gap: 6px;
+      }
+      .filter-dropdown,
+      .export-btn {
+        font-size: 13px;
+        padding: 10px 14px;
+      }
+      .export-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .chart-grid-2 { padding: 10px 12px 14px; gap: 12px; }
+      .chart-card-body { height: 220px; padding: 10px 12px 14px; }
+      .chart-full .chart-card-body { height: 270px; }
+      .chart-card-header { padding: 10px 12px; gap: 8px; }
+      .chart-card-icon { width: 28px; height: 28px; font-size: 12px; }
+      .chart-card-header h3 { font-size: 12.5px; }
+
+      .toast-msg {
+        padding: 12px 16px;
+        font-size: 13px;
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .main-panel { padding: 10px 8px; }
+      .stats-row { grid-template-columns: 1fr; }
+      .chart-card-body { height: 200px; }
+      .chart-full .chart-card-body { height: 240px; }
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      .toast-msg,
+      .chart-toggle { display: none !important; }
+      .data-card,
+      .page-header {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+      .chart-card { page-break-inside: avoid; }
+      canvas {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <div class="app-wrapper" id="appWrapper">
+    <div id="sidebar-placeholder"></div>
+
+    <div class="app-container">
+      <main class="main-panel">
+        <div class="page-header">
+          <h1><i class="fas fa-chart-pie"></i> Fee Analysis Dashboard</h1>
+          <p>Visual insights into fee collection — payment status and monthly trends across all classes.</p>
+        </div>
+
+        <!-- ===== STATS CARDS (4 ONLY) ===== -->
+        <div class="stats-row" id="statsRow">
+          <div class="stat-card">
+            <div class="stat-icon blue"><i class="fas fa-file-invoice-dollar"></i></div>
+            <div class="stat-info">
+              <span class="stat-value" id="statTotalRecords">0</span>
+              <span class="stat-label">Total Fee Records</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-info">
+              <span class="stat-value" id="statTotalPaid">PKR 0</span>
+              <span class="stat-label">Total Collected</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon red"><i class="fas fa-clock"></i></div>
+            <div class="stat-info">
+              <span class="stat-value" id="statTotalUnpaid">PKR 0</span>
+              <span class="stat-label">Outstanding</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon amber"><i class="fas fa-percentage"></i></div>
+            <div class="stat-info">
+              <span class="stat-value" id="statCollectionRate">0%</span>
+              <span class="stat-label">Collection Rate</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== FILTER SECTION ===== -->
+        <div class="filter-section">
+          <div class="filter-group">
+            <label class="filter-label">Filter by Fee Month</label>
+            <select class="filter-dropdown" id="monthFilter" onchange="filterByMonth(this.value)">
+              <option value="overall">Overall Stats</option>
+            </select>
+          </div>
+          <button class="export-btn" id="exportBtn" onclick="downloadExcelReport()">
+            <i class="fas fa-file-excel"></i> Download Excel
+          </button>
+        </div>
+
+        <!-- Export Progress -->
+        <div class="export-progress" id="exportProgress">
+          <p style="margin-bottom: 8px; color: #1e293b; font-size: 0.9rem;">Generating Excel Report...</p>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <!-- ===== CHARTS ===== -->
+        <div class="data-card">
+          <div class="card-header">
+            <h2><i class="fas fa-chart-pie"></i> Fee Distribution Overview</h2>
+          </div>
+          <div class="chart-grid-2">
+
+            <!-- ===== Chart 1: Paid vs Unpaid (Donut) ===== -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-card-header-left">
+                  <div class="chart-card-icon"><i class="fas fa-chart-pie"></i></div>
+                  <div>
+                    <h3>Paid vs Unpaid</h3>
+                    <div class="sub" id="paidUnpaidSubtitle">Payment status split for selected period</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="chart-card-body">
+                <canvas id="chartPaidUnpaid"></canvas>
+              </div>
+            </div>
+
+            <!-- ===== Chart 2: Class Fee Collection Rate ===== -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-card-header-left">
+                  <div class="chart-card-icon"><i class="fas fa-percentage"></i></div>
+                  <div>
+                    <h3>Class Fee Collection Rate</h3>
+                    <div class="sub" id="collectionRateSubtitle">Paid vs Unpaid by class</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="chart-card-body">
+                <canvas id="chartCollectionRate"></canvas>
+              </div>
+            </div>
+
+            <!-- ===== Chart 3: Collection Trend ===== -->
+            <div class="chart-card chart-full">
+              <div class="chart-card-header">
+                <div class="chart-card-header-left">
+                  <div class="chart-card-icon"><i class="fas fa-chart-line"></i></div>
+                  <div>
+                    <h3>Collection Trend</h3>
+                    <div class="sub" id="collectionTrendSubtitle">Amount collected over time</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="chart-card-body">
+                <canvas id="chartCollectionTrend"></canvas>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="../components.js"></script>
+  <script>
+    // ===== Load Components =====
+    function loadComponents() {
+      fetch('header.html')
+        .then(r => r.text())
+        .then(data => document.getElementById('header-placeholder').innerHTML = data)
+        .catch(err => console.error('Error loading header:', err));
+
+      fetch('sidebar.html')
+        .then(r => r.text())
+        .then(data => document.getElementById('sidebar-placeholder').innerHTML = data)
+        .catch(err => console.error('Error loading sidebar:', err));
+    }
+
+    window.onload = function() {
+      loadComponents();
+      setTimeout(() => {
+        if (typeof window.initHeaderAndSidebar === 'function') {
+          window.initHeaderAndSidebar();
+        }
+      }, 400);
+
+      initDashboard();
+    };
+
+    // ===== Storage Helpers =====
+    function loadFromStorage(key) {
+      const stored = localStorage.getItem(key);
+      return stored ? JSON.parse(stored) : [];
+    }
+
+    // ===== Chart.js Global Defaults =====
+    Chart.defaults.font.family = "'Segoe UI', Roboto, system-ui, sans-serif";
+    Chart.defaults.font.size = 12;
+    Chart.defaults.color = '#64748b';
+    Chart.defaults.plugins.legend.labels.usePointStyle = true;
+    Chart.defaults.plugins.legend.labels.boxWidth = 8;
+    Chart.defaults.plugins.legend.labels.padding = 14;
+
+    // Palette
+    const COLORS = {
+      blue: 'rgba(37, 99, 235, 0.85)',
+      blueBorder: '#2563eb',
+      green: 'rgba(22, 163, 74, 0.85)',
+      greenBorder: '#16a34a',
+      red: 'rgba(220, 38, 38, 0.85)',
+      redBorder: '#dc2626',
+      amber: 'rgba(245, 158, 11, 0.85)',
+      amberBorder: '#f59e0b'
+    };
+
+    // ===== Chart Instances =====
+    const charts = {
+      paidUnpaid: null,
+      collectionRate: null,
+      collectionTrend: null
+    };
+
+    // ===== State =====
+    let feeRecords = [];
+    let filteredFeeRecords = [];
+    let selectedMonth = 'overall';
+    let availableMonths = [];
+
+    // ===== Init Dashboard =====
+    function initDashboard() {
+      feeRecords = loadFromStorage('messFeeRecords');
+      filteredFeeRecords = [...feeRecords];
+      populateMonthFilter();
+      updateStats();
+      renderPaidUnpaidChart();
+      renderCollectionRateChart();
+      renderCollectionTrendChart();
+    }
+
+    // ===== Extract Available Months =====
+    function extractAvailableMonths() {
+      const monthSet = new Set();
+      feeRecords.forEach(r => {
+        if (r.feeMonth) monthSet.add(r.feeMonth);
+      });
+      return [...monthSet].sort((a, b) => {
+        const da = new Date(a);
+        const db = new Date(b);
+        if (isNaN(da) || isNaN(db)) return a.localeCompare(b);
+        return da - db;
+      });
+    }
+
+    // ===== Populate Month Filter Dropdown =====
+    function populateMonthFilter() {
+      availableMonths = extractAvailableMonths();
+      const dropdown = document.getElementById('monthFilter');
+      
+      availableMonths.forEach(month => {
+        const option = document.createElement('option');
+        option.value = month;
+        option.textContent = month;
+        dropdown.appendChild(option);
+      });
+    }
+
+    // ===== Filter by Month =====
+    function filterByMonth(monthStr) {
+      selectedMonth = monthStr;
+      
+      if (monthStr === 'overall') {
+        filteredFeeRecords = [...feeRecords];
+      } else {
+        filteredFeeRecords = feeRecords.filter(r => r.feeMonth === monthStr);
+      }
+
+      updateStats();
+      renderPaidUnpaidChart();
+      renderCollectionRateChart();
+      renderCollectionTrendChart();
+    }
+
+    // ===== Update Stats =====
+    function updateStats() {
+      const totalRecords = filteredFeeRecords.length;
+
+      const totalPaid = filteredFeeRecords
+        .filter(r => r.status === 'Paid')
+        .reduce((sum, r) => sum + (parseFloat(r.amount) || 0), 0);
+
+      const totalUnpaid = filteredFeeRecords
+        .filter(r => r.status === 'Unpaid')
+        .reduce((sum, r) => sum + (parseFloat(r.amount) || 0), 0);
+
+      const overallTotal = totalPaid + totalUnpaid;
+      const rate = overallTotal > 0 ? Math.round((totalPaid / overallTotal) * 100) : 0;
+
+      document.getElementById('statTotalRecords').textContent = totalRecords;
+      document.getElementById('statTotalPaid').textContent = 'PKR ' + totalPaid.toLocaleString();
+      document.getElementById('statTotalUnpaid').textContent = 'PKR ' + totalUnpaid.toLocaleString();
+      document.getElementById('statCollectionRate').textContent = rate + '%';
+    }
+
+    // ===== Empty state =====
+    function renderChartEmpty(canvas, message) {
+      const parent = canvas.parentElement;
+      if (!parent) return;
+      parent.innerHTML = `
+        <div class="chart-empty-state">
+          <i class="fas fa-chart-bar"></i>
+          <p>${message || 'No data available'}</p>
+        </div>
+      `;
+    }
+
+    // ===== Helper: extract day-of-month from a record =====
+    function extractDayFromRecord(r, monthIdx, yearNum, daysInMonth) {
+      const dtStr = r.paidDateTime || r.assignedAt || '';
+      if (!dtStr) return null;
+
+      const dt = new Date(dtStr);
+      if (!isNaN(dt) && dt.getMonth() === monthIdx && dt.getFullYear() === yearNum) {
+        return dt.getDate();
+      }
+
+      // Fallback regex: dd/mm/yyyy or dd-mm-yyyy
+      const m1 = dtStr.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+      if (m1) {
+        const dd = parseInt(m1[1], 10);
+        if (dd >= 1 && dd <= daysInMonth) return dd;
+      }
+
+      // Fallback regex: yyyy-mm-dd
+      const m2 = dtStr.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+      if (m2) {
+        const dd = parseInt(m2[3], 10);
+        if (dd >= 1 && dd <= daysInMonth) return dd;
+      }
+
+      return null;
+    }
+
+    // ============================================
+    // Chart 1: Paid vs Unpaid (Donut)
+    // ============================================
+    function renderPaidUnpaidChart() {
+      const canvas = document.getElementById('chartPaidUnpaid');
+      if (!canvas) return;
+
+      const cv = document.getElementById('chartPaidUnpaid');
+      if (charts.paidUnpaid) charts.paidUnpaid.destroy();
+
+      const subLabel = selectedMonth === 'overall' 
+        ? 'Overall payment status split' 
+        : `Payment status for ${selectedMonth}`;
+      document.getElementById('paidUnpaidSubtitle').textContent = subLabel;
+
+      const paid = filteredFeeRecords.filter(r => r.status === 'Paid').length;
+      const unpaid = filteredFeeRecords.filter(r => r.status === 'Unpaid').length;
+
+      if (paid + unpaid === 0) {
+        renderChartEmpty(cv, 'No records for this period');
+        return;
+      }
+
+      charts.paidUnpaid = new Chart(cv.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Paid', 'Unpaid'],
+          datasets: [{
+            data: [paid, unpaid],
+            backgroundColor: [COLORS.green, COLORS.red],
+            borderColor: [COLORS.greenBorder, COLORS.redBorder],
+            borderWidth: 2,
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '62%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { padding: 14, font: { size: 11, weight: '600' } }
+            },
+            tooltip: {
+              backgroundColor: '#1e293b',
+              padding: 12,
+              callbacks: {
+                label: (ctx) => {
+                  const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                  const pct = total > 0 ? Math.round((ctx.parsed / total) * 100) : 0;
+                  return ` ${ctx.label}: ${ctx.parsed} record${ctx.parsed === 1 ? '' : 's'} (${pct}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // ============================================
+    // Chart 2: Class Fee Collection Rate (100% Stacked)
+    // ============================================
+    function renderCollectionRateChart() {
+      const canvas = document.getElementById('chartCollectionRate');
+      if (!canvas) return;
+
+      const cv = document.getElementById('chartCollectionRate');
+      if (charts.collectionRate) charts.collectionRate.destroy();
+
+      const subLabel = selectedMonth === 'overall' 
+        ? 'Paid vs Unpaid by class (100%)' 
+        : `Paid vs Unpaid by class for ${selectedMonth}`;
+      document.getElementById('collectionRateSubtitle').textContent = subLabel;
+
+      // Aggregate per class
+      const byClass = {};
+      filteredFeeRecords.forEach(r => {
+        const cls = r.className || '—';
+        if (!byClass[cls]) byClass[cls] = { paid: 0, unpaid: 0 };
+        const amt = parseFloat(r.amount) || 0;
+        if (r.status === 'Paid') byClass[cls].paid += amt;
+        else byClass[cls].unpaid += amt;
+      });
+
+      const classes = Object.keys(byClass).sort();
+      if (classes.length === 0) {
+        renderChartEmpty(cv, 'No class fee data for this period');
+        return;
+      }
+
+      const paidData = [];
+      const unpaidData = [];
+
+      classes.forEach(cls => {
+        const { paid, unpaid } = byClass[cls];
+        const total = paid + unpaid;
+        paidData.push(total > 0 ? (paid / total) * 100 : 0);
+        unpaidData.push(total > 0 ? (unpaid / total) * 100 : 0);
+      });
+
+      charts.collectionRate = new Chart(cv.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: classes,
+          datasets: [
+            {
+              label: 'Paid %',
+              data: paidData,
+              backgroundColor: COLORS.green,
+              borderColor: COLORS.greenBorder,
+              borderWidth: 2,
+              borderRadius: 0,
+              barPercentage: 0.7,
+              categoryPercentage: 0.8
+            },
+            {
+              label: 'Unpaid %',
+              data: unpaidData,
+              backgroundColor: COLORS.red,
+              borderColor: COLORS.redBorder,
+              borderWidth: 2,
+              borderRadius: 0,
+              barPercentage: 0.7,
+              categoryPercentage: 0.8
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { padding: 14, font: { size: 11, weight: '600' } }
+            },
+            tooltip: {
+              backgroundColor: '#1e293b',
+              padding: 12,
+              callbacks: {
+                label: (ctx) => {
+                  const cls = classes[ctx.dataIndex];
+                  const { paid, unpaid } = byClass[cls];
+                  const pct = Math.round(ctx.parsed.y);
+                  const amt = ctx.dataset.label === 'Paid %' ? paid : unpaid;
+                  return ` ${ctx.dataset.label}: ${pct}% (PKR ${amt.toLocaleString()})`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              stacked: true,
+              grid: { display: false },
+              ticks: { font: { size: 10.5, weight: '600' }, color: '#334155' }
+            },
+            y: {
+              stacked: true,
+              beginAtZero: true,
+              max: 100,
+              ticks: { font: { size: 11 }, callback: (v) => v + '%' },
+              grid: { color: '#f1f5f9' },
+              title: {
+                display: true,
+                text: 'Collection Rate',
+                font: { size: 11, weight: '600' },
+                color: '#475569'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // ============================================
+    // Chart 3: Collection Trend (Combo: Bar + Line)
+    //  - Overall selected  → monthly aggregation (per fee month)
+    //  - Specific month   → daily aggregation (day 1..N of that month)
+    // ============================================
+    function renderCollectionTrendChart() {
+      const canvas = document.getElementById('chartCollectionTrend');
+      if (!canvas) return;
+
+      const cv = document.getElementById('chartCollectionTrend');
+      if (charts.collectionTrend) charts.collectionTrend.destroy();
+
+      const subEl = document.getElementById('collectionTrendSubtitle');
+
+      // ============================================
+      // SPECIFIC MONTH SELECTED → DAILY VIEW
+      // ============================================
+      if (selectedMonth !== 'overall') {
+        const month = selectedMonth;
+
+        // Parse "MonthName YYYY" → days in month
+        const [monthName, yearStr] = String(month).split(' ');
+        const monthIdx = new Date(`${monthName} 1, ${yearStr}`).getMonth();
+        const yearNum = parseInt(yearStr, 10);
+        const daysInMonth = (isNaN(monthIdx) || isNaN(yearNum))
+          ? 31
+          : new Date(yearNum, monthIdx + 1, 0).getDate();
+
+        // Bucket paid records of this month by day and calculate total expected
+        const byDay = {};
+        let totalExpected = 0;
+        for (let d = 1; d <= daysInMonth; d++) byDay[d] = 0;
+
+        filteredFeeRecords.forEach(r => {
+          const amt = parseFloat(r.amount) || 0;
+          totalExpected += amt; // Sum of all assigned fees (paid + unpaid) for this month
+
+          if (r.status !== 'Paid') return;
+          if (r.feeMonth !== month) return;
+
+          const day = extractDayFromRecord(r, monthIdx, yearNum, daysInMonth);
+          if (day && byDay[day] !== undefined) {
+            byDay[day] += amt;
+          }
+        });
+
+        const labels = [];
+        const data = [];
+        let cumulative = 0;
+        const cumulativePercent = [];
+
+        for (let d = 1; d <= daysInMonth; d++) {
+          labels.push(String(d));
+          const dailyAmt = byDay[d];
+          data.push(dailyAmt);
+          
+          cumulative += dailyAmt;
+          cumulativePercent.push(totalExpected > 0 ? (cumulative / totalExpected) * 100 : 0);
+        }
+
+        subEl.textContent = `Daily collection — ${month}`;
+
+        charts.collectionTrend = new Chart(cv.getContext('2d'), {
+          type: 'bar', // Base type is bar
+          data: {
+            labels,
+            datasets: [
+              {
+                type: 'bar',
+                label: 'Daily Collection (PKR)',
+                data: data,
+                backgroundColor: COLORS.blue,
+                borderColor: COLORS.blueBorder,
+                borderWidth: 1,
+                borderRadius: 2,
+                yAxisID: 'y', // Left axis
+                order: 2
+              },
+              {
+                type: 'line',
+                label: 'Cumulative Collection %',
+                data: cumulativePercent,
+                borderColor: '#f59e0b', // Amber line like the image
+                backgroundColor: 'transparent',
+                borderWidth: 2,
+                tension: 0.3,
+                pointRadius: 3,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#f59e0b',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 1.5,
+                yAxisID: 'y1', // Right axis
+                order: 1
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { position: 'bottom', labels: { padding: 14, font: { size: 11, weight: '600' } } },
+              tooltip: {
+                backgroundColor: '#1e293b',
+                padding: 12,
+                callbacks: {
+                  title: (items) => `Day ${items[0].label} — ${month}`,
+                  label: (ctx) => {
+                    if (ctx.dataset.type === 'line') {
+                      return ` Cumulative: ${ctx.parsed.y.toFixed(1)}%`;
+                    }
+                    return ` Collected: PKR ${ctx.parsed.y.toLocaleString()}`;
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                beginAtZero: true,
+                ticks: {
+                  font: { size: 11 },
+                  callback: (v) => 'PKR ' + v.toLocaleString()
+                },
+                grid: { color: '#f1f5f9' },
+                title: {
+                  display: true,
+                  text: 'Amount Collected (PKR)',
+                  font: { size: 11, weight: '600' },
+                  color: '#475569'
+                }
+              },
+              y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                beginAtZero: true,
+                max: 100,
+                ticks: {
+                  font: { size: 11 },
+                  callback: (v) => v + '%'
+                },
+                grid: { drawOnChartArea: false }, // Avoid grid line overlap
+                title: {
+                  display: true,
+                  text: 'Cumulative Collection Rate',
+                  font: { size: 11, weight: '600' },
+                  color: '#475569'
+                }
+              },
+              x: {
+                grid: { display: false },
+                ticks: { font: { size: 10 }, autoSkip: true, maxTicksLimit: 15 },
+                title: {
+                  display: true,
+                  text: 'Day of Month',
+                  font: { size: 11, weight: '600' },
+                  color: '#475569'
+                }
+              }
+            }
+          }
+        });
+        return;
+      }
+
+      // ============================================
+      // OVERALL SELECTED → MONTHLY AGGREGATION
+      // ============================================
+      const paidRecords = filteredFeeRecords.filter(r => r.status === 'Paid');
+
+      const byMonth = {};
+      let totalExpectedOverall = 0;
+
+      // Calculate total expected and total paid per month
+      filteredFeeRecords.forEach(r => {
+        const month = r.feeMonth || 'Unknown';
+        const amt = parseFloat(r.amount) || 0;
+        
+        if (!byMonth[month]) byMonth[month] = { paid: 0, expected: 0 };
+        
+        byMonth[month].expected += amt;
+        totalExpectedOverall += amt;
+        
+        if (r.status === 'Paid') {
+          byMonth[month].paid += amt;
+        }
+      });
+
+      const months = Object.keys(byMonth).sort();
+      const data = months.map(m => byMonth[m].paid);
+
+      // Calculate cumulative percentage across months
+      let cumulative = 0;
+      const cumulativePercent = months.map(m => {
+        cumulative += byMonth[m].paid;
+        return totalExpectedOverall > 0 ? (cumulative / totalExpectedOverall) * 100 : 0;
+      });
+
+      subEl.textContent = 'Amount collected per fee month';
+
+      if (months.length === 0) {
+        renderChartEmpty(cv, 'No payment data available');
+        return;
+      }
+
+      charts.collectionTrend = new Chart(cv.getContext('2d'), {
+        type: 'bar', // Base type is bar
+        data: {
+          labels: months,
+          datasets: [
+            {
+              type: 'bar',
+              label: 'Monthly Collection (PKR)',
+              data: data,
+              backgroundColor: COLORS.blue,
+              borderColor: COLORS.blueBorder,
+              borderWidth: 1,
+              borderRadius: 2,
+              yAxisID: 'y', // Left axis
+              order: 2
+            },
+            {
+              type: 'line',
+              label: 'Cumulative Collection %',
+              data: cumulativePercent,
+              borderColor: '#f59e0b',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              tension: 0.3,
+              pointRadius: 4,
+              pointHoverRadius: 7,
+              pointBackgroundColor: '#f59e0b',
+              pointBorderColor: '#fff',
+              pointBorderWidth: 1.5,
+              yAxisID: 'y1', // Right axis
+              order: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { position: 'bottom', labels: { padding: 14, font: { size: 11, weight: '600' } } },
+            tooltip: {
+              backgroundColor: '#1e293b',
+              padding: 12,
+              callbacks: {
+                label: (ctx) => {
+                  if (ctx.dataset.type === 'line') {
+                    return ` Cumulative: ${ctx.parsed.y.toFixed(1)}%`;
+                  }
+                  return ` Collected: PKR ${ctx.parsed.y.toLocaleString()}`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              beginAtZero: true,
+              ticks: {
+                font: { size: 11 },
+                callback: (v) => 'PKR ' + v.toLocaleString()
+              },
+              grid: { color: '#f1f5f9' },
+              title: {
+                display: true,
+                text: 'Amount Collected (PKR)',
+                font: { size: 11, weight: '600' },
+                color: '#475569'
+              }
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                font: { size: 11 },
+                callback: (v) => v + '%'
+              },
+              grid: { drawOnChartArea: false }, // Avoid grid line overlap
+              title: {
+                display: true,
+                text: 'Cumulative Collection Rate',
+                font: { size: 11, weight: '600' },
+                color: '#475569'
+              }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { font: { size: 10.5, weight: '600' }, color: '#334155' }
+            }
+          }
+        }
+      });
+    }
+
+    // ============================================
+    // EXCEL EXPORT FUNCTION
+    // ============================================
+    async function downloadExcelReport() {
+      const btn = document.getElementById('exportBtn');
+      btn.disabled = true;
+      const progress = document.getElementById('exportProgress');
+      const progressFill = document.getElementById('progressFill');
+      progress.classList.add('show');
+
+      try {
+        const wb = XLSX.utils.book_new();
+        
+        // Determine which data to export
+        const dataToExport = selectedMonth === 'overall' 
+          ? feeRecords 
+          : filteredFeeRecords;
+
+        progressFill.style.width = '50%';
+        
+        // Fee Records Sheet
+        const feeData = dataToExport.map(f => ({
+          'Receipt No.': f.receiptNo,
+          'Student Name': f.studentName,
+          'Reg. No.': f.regNo,
+          'Class': f.className,
+          'Fee Type': f.feeType,
+          'Fee Month': f.feeMonth,
+          'Amount (PKR)': f.amount,
+          'Status': f.status,
+          'Payment Date': f.paidDateTime
+        }));
+        const ws = XLSX.utils.json_to_sheet(feeData);
+        XLSX.utils.book_append_sheet(wb, ws, 'Fee Records');
+
+        ws['!cols'] = [
+          {wch: 14}, {wch: 18}, {wch: 14}, 
+          {wch: 14}, {wch: 14}, {wch: 14}, 
+          {wch: 14}, {wch: 12}, {wch: 18}
+        ];
+
+        // ===== Daily Collection Sheet (only when a specific month is selected) =====
+        if (selectedMonth !== 'overall') {
+          const month = selectedMonth;
+          const [monthName, yearStr] = String(month).split(' ');
+          const monthIdx = new Date(`${monthName} 1, ${yearStr}`).getMonth();
+          const yearNum = parseInt(yearStr, 10);
+          const daysInMonth = (isNaN(monthIdx) || isNaN(yearNum))
+            ? 31 : new Date(yearNum, monthIdx + 1, 0).getDate();
+
+          const byDay = {};
+          for (let d = 1; d <= daysInMonth; d++) byDay[d] = 0;
+
+          filteredFeeRecords.forEach(r => {
+            if (r.status !== 'Paid' || r.feeMonth !== month) return;
+            const day = extractDayFromRecord(r, monthIdx, yearNum, daysInMonth);
+            if (day) byDay[day] += (parseFloat(r.amount) || 0);
+          });
+
+          const dailyData = Object.entries(byDay).map(([day, amt]) => ({
+            'Day': day,
+            'Fee Month': month,
+            'Amount Collected (PKR)': amt
+          }));
+          const wsDaily = XLSX.utils.json_to_sheet(dailyData);
+          XLSX.utils.book_append_sheet(wb, wsDaily, 'Daily Collection');
+          wsDaily['!cols'] = [{wch: 8}, {wch: 16}, {wch: 22}];
+        }
+
+        progressFill.style.width = '100%';
+        const filename = selectedMonth === 'overall' 
+          ? `MEI_Fee_Report_${new Date().toISOString().split('T')[0]}.xlsx`
+          : `MEI_Fee_Report_${selectedMonth.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
+        
+        XLSX.writeFile(wb, filename);
+
+        setTimeout(() => {
+          progress.classList.remove('show');
+          progressFill.style.width = '0%';
+          showToast('✅ Excel report downloaded successfully!');
+        }, 400);
+      } catch (error) {
+        console.error('Export error:', error);
+        showToast('❌ Error generating report. Please try again.');
+        progress.classList.remove('show');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // ===== Toast Notification =====
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'toast-msg';
+      toast.innerHTML = `<i class="fas fa-bell"></i> ${message}`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+  </script>
+</body>
+</html>

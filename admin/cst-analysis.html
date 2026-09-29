@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>MEI – CST Analysis Dashboard</title>
+  <link rel="icon" type="image/png" href="../logo2.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../components.css">
+  <link rel="stylesheet" href="../responsive-components.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- XLSX Library for Excel Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    /* ============================================
+       INTERNAL CSS - Unified Design System
+       Based on: class-details.html / student-details.html / teacher-details.html
+       Blue Theme | Full Width | Responsive
+       ============================================ */
+
+    /* ===== RESET & GLOBAL ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    }
+
+    body {
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    .app-wrapper {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* ===== MAIN PANEL - FULL WIDTH ===== */
+    .main-panel {
+      flex: 1;
+      padding: 32px;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      background: #f8fafc;
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: white;
+      padding: 24px 32px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e9eef3;
+      width: 100%;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .page-header h1 i {
+      color: #2563eb;
+      background: none;
+      -webkit-text-fill-color: #2563eb;
+    }
+
+    .page-header p {
+      color: #475569;
+      margin-top: 8px;
+      font-size: 15px;
+      border-left: 3px solid #3b82f6;
+      padding-left: 16px;
+    }
+
+    /* ===== STATS CARDS ROW ===== */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 28px;
+      align-items: start;
+    }
+
+    .stat-card {
+      background: white;
+      border: 1px solid #edf2f7;
+      padding: 20px 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.1);
+      border-color: #93c5fd;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      border: 1px solid;
+    }
+
+    .stat-icon.blue { background: #eef2ff; color: #2563eb; border-color: #dbeafe; }
+    .stat-icon.green { background: #d1fae5; color: #16a34a; border-color: #a7f3d0; }
+    .stat-icon.amber { background: #fef3c7; color: #d97706; border-color: #fde68a; }
+    .stat-icon.purple { background: #ede9fe; color: #7c3aed; border-color: #ddd6fe; }
+    .stat-icon.rose { background: #ffe4e6; color: #e11d48; border-color: #fecdd3; }
+    .stat-icon.teal { background: #ccfbf1; color: #0d9488; border-color: #99f6e4; }
+
+    .stat-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e293b;
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    /* ===== FILTER SECTION ===== */
+    .filter-section {
+      background: white;
+      border: 1px solid #edf2f7;
+      padding: 20px 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 0;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .filter-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .filter-dropdown {
+      padding: 12px 16px;
+      border: 1px solid #dbeafe;
+      background: white;
+      color: #1e293b;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232563eb' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    .filter-dropdown:hover {
+      border-color: #93c5fd;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    }
+
+    .filter-dropdown:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .export-btn {
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+      white-space: nowrap;
+      align-self: flex-end;
+    }
+
+    .export-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    }
+
+    .export-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .export-progress {
+      display: none;
+      text-align: center;
+      padding: 16px;
+      background: #eef2ff;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      margin-top: -8px;
+    }
+
+    .export-progress.show {
+      display: block;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: #dbeafe;
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2563eb, #1e40af);
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    /* ===== DATA CARD ===== */
+    .data-card {
+      background: white;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+      border: 1px solid #edf2f7;
+      overflow: hidden;
+      width: 100%;
+      margin-bottom: 28px;
+    }
+
+    .card-header {
+      padding: 20px 28px;
+      background: #fefefe;
+      border-bottom: 1px solid #eef2f8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .card-header h2 {
+      font-size: 19px;
+      font-weight: 700;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-header h2 i {
+      color: #2563eb;
+      font-size: 20px;
+    }
+
+    /* ============================================
+       CHART GRID
+       ============================================ */
+    .chart-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 24px;
+      padding: 24px 28px 28px;
+    }
+
+    .chart-card {
+      background: white;
+      border: 1.5px solid #e2e8f0;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .chart-card:hover {
+      border-color: #93c5fd;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.08);
+    }
+
+    .chart-card-header {
+      padding: 16px 20px;
+      background: #fefefe;
+      border-bottom: 1px solid #eef2f8;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chart-card-icon {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eef2ff;
+      color: #2563eb;
+      font-size: 16px;
+      flex-shrink: 0;
+      border: 1px solid #dbeafe;
+    }
+
+    .chart-card-header h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.3;
+    }
+
+    .chart-card-header .sub {
+      font-size: 11.5px;
+      color: #64748b;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .chart-card-body {
+      padding: 18px 20px 20px;
+      height: 300px;
+      position: relative;
+    }
+
+    .chart-card-body canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .chart-full {
+      grid-column: 1 / -1;
+    }
+
+    .chart-full .chart-card-body {
+      height: 400px;
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .chart-empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #94a3b8;
+      gap: 8px;
+    }
+
+    .chart-empty-state i {
+      font-size: 36px;
+      color: #93c5fd;
+    }
+
+    .chart-empty-state p {
+      font-size: 13px;
+      font-weight: 500;
+      color: #64748b;
+    }
+
+    /* ===== TOAST ===== */
+    .toast-msg {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1e293b;
+      color: white;
+      padding: 16px 28px;
+      font-size: 15px;
+      font-weight: 500;
+      z-index: 2200;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideUp 0.35s ease;
+      max-width: 480px;
+      border-radius: 0;
+    }
+
+    .toast-msg i { color: #3b82f6; font-size: 20px; }
+
+    @keyframes slideUp {
+      0% { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 1024px) {
+      .main-panel { padding: 24px 20px; }
+      .page-header { padding: 20px 24px; }
+      .page-header h1 { font-size: 24px; }
+      .page-header p { font-size: 14px; }
+      .card-header { padding: 16px 20px; }
+      .card-header h2 { font-size: 17px; }
+      .chart-grid-2 { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); padding: 18px 20px 22px; }
+      .chart-card-body { height: 280px; }
+      .chart-full .chart-card-body { height: 360px; }
+    }
+
+    @media (max-width: 768px) {
+      .main-panel { padding: 20px 16px; }
+      .page-header { padding: 18px 20px; }
+      .page-header h1 { font-size: 21px; gap: 10px; }
+      .page-header p { font-size: 13.5px; padding-left: 12px; margin-top: 6px; }
+      .card-header {
+        padding: 14px 16px;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .card-header h2 { font-size: 16px; flex-wrap: wrap; }
+
+      .stats-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .stat-card { padding: 14px 16px; gap: 12px; }
+      .stat-icon { width: 40px; height: 40px; font-size: 17px; }
+      .stat-value { font-size: 20px; }
+      .stat-label { font-size: 11px; }
+
+      .filter-section {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .filter-group {
+        width: 100%;
+        min-width: 100%;
+      }
+      .export-btn {
+        width: 100%;
+        justify-content: center;
+        align-self: auto;
+      }
+
+      .chart-grid-2 { grid-template-columns: 1fr; padding: 14px 16px 18px; gap: 16px; }
+      .chart-card-body { height: 240px; padding: 14px 14px 16px; }
+      .chart-full .chart-card-body { height: 300px; }
+      .chart-card-header { padding: 12px 14px; }
+      .chart-card-icon { width: 32px; height: 32px; font-size: 14px; }
+      .chart-card-header h3 { font-size: 13.5px; }
+      .chart-card-header .sub { font-size: 10.5px; }
+
+      .toast-msg {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        padding: 14px 20px;
+        font-size: 14px;
+        justify-content: center;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .main-panel { padding: 16px 12px; }
+      .page-header { padding: 14px 16px; }
+      .page-header h1 { font-size: 18px; gap: 8px; }
+      .page-header h1 i { font-size: 17px; }
+      .page-header p { font-size: 12.5px; padding-left: 10px; }
+      .card-header { padding: 12px 14px; }
+      .card-header h2 { font-size: 14px; gap: 8px; }
+
+      .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .stat-card { padding: 10px 12px; gap: 8px; }
+      .stat-icon { width: 34px; height: 34px; font-size: 14px; }
+      .stat-value { font-size: 17px; }
+      .stat-label { font-size: 9.5px; }
+
+      .filter-section {
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px 16px;
+      }
+      .filter-group {
+        width: 100%;
+        gap: 6px;
+      }
+      .filter-dropdown,
+      .export-btn {
+        font-size: 13px;
+        padding: 10px 14px;
+      }
+      .export-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .chart-grid-2 { padding: 10px 12px 14px; gap: 12px; }
+      .chart-card-body { height: 210px; padding: 10px 12px 14px; }
+      .chart-full .chart-card-body { height: 260px; }
+      .chart-card-header { padding: 10px 12px; gap: 8px; }
+      .chart-card-icon { width: 28px; height: 28px; font-size: 12px; }
+      .chart-card-header h3 { font-size: 12.5px; }
+
+      .toast-msg {
+        padding: 12px 16px;
+        font-size: 13px;
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .main-panel { padding: 10px 8px; }
+      .stats-row { grid-template-columns: 1fr; }
+      .chart-card-body { height: 190px; }
+      .chart-full .chart-card-body { height: 230px; }
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      .toast-msg { display: none !important; }
+      .data-card,
+      .page-header {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+      .chart-card { page-break-inside: avoid; }
+      canvas {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <div class="app-wrapper" id="appWrapper">
+    <div id="sidebar-placeholder"></div>
+
+    <div class="app-container">
+      <main class="main-panel">
+        <div class="page-header">
+          <h1><i class="fas fa-layer-group"></i> CST Analysis Dashboard</h1>
+          <p>Visual insights into Classes, Students, and Teachers — enrollment, gender, and resource distribution.</p>
+        </div>
+
+        <!-- ===== STATS CARDS (3 ONLY) ===== -->
+        <div class="stats-row" id="statsRow">
+          <div class="stat-card">
+            <div class="stat-icon blue"><i class="fas fa-chalkboard"></i></div>
+            <div class="stat-info">
+              <span class="stat-value" id="statTotalClasses">0</span>
+              <span class="stat-label">Total Classes</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green"><i class="fas fa-users"></i></div>
+            <div class="stat-info">
+              <span class="stat-value" id="statTotalStudents">0</span>
+              <span class="stat-label">Total Students</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon purple"><i class="fas fa-chalkboard-teacher"></i></div>
+            <div class="stat-info">
+              <span class="stat-value" id="statTotalTeachers">0</span>
+              <span class="stat-label">Total Teachers</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== FILTER SECTION ===== -->
+        <div class="filter-section">
+          <div class="filter-group">
+            <label class="filter-label">Filter by Month</label>
+            <select class="filter-dropdown" id="monthFilter" onchange="filterByMonth(this.value)">
+              <option value="overall">Overall Stats</option>
+            </select>
+          </div>
+          <button class="export-btn" id="exportBtn" onclick="downloadExcelReport()">
+            <i class="fas fa-file-excel"></i> Download Excel
+          </button>
+        </div>
+
+        <!-- Export Progress -->
+        <div class="export-progress" id="exportProgress">
+          <p style="margin-bottom: 8px; color: #1e293b; font-size: 0.9rem;">Generating Excel Report...</p>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <!-- ===== CHARTS ===== -->
+        <div class="data-card">
+          <div class="card-header">
+            <h2><i class="fas fa-chart-pie"></i> Distribution Overview</h2>
+          </div>
+          <div class="chart-grid-2">
+
+            <!-- Chart 1: Students per Class (Horizontal Bar — full width) -->
+            <div class="chart-card chart-full">
+              <div class="chart-card-header">
+                <div class="chart-card-icon"><i class="fas fa-chart-bar"></i></div>
+                <div>
+                  <h3>Students per Class</h3>
+                  <div class="sub">Enrollment distribution across all classes (horizontal bar)</div>
+                </div>
+              </div>
+              <div class="chart-card-body">
+                <canvas id="chartStudentsPerClass"></canvas>
+              </div>
+            </div>
+
+            <!-- Chart 2: Active vs Inactive Students (Pie) -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-card-icon"><i class="fas fa-chart-pie"></i></div>
+                <div>
+                  <h3>Students — Active vs Inactive</h3>
+                  <div class="sub">Current enrollment status split</div>
+                </div>
+              </div>
+              <div class="chart-card-body">
+                <canvas id="chartStudentStatus"></canvas>
+              </div>
+            </div>
+
+            <!-- Chart 3: Active vs Inactive Teachers (Pie) -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div class="chart-card-icon"><i class="fas fa-user-tie"></i></div>
+                <div>
+                  <h3>Teachers — Active vs Inactive</h3>
+                  <div class="sub">Current staff status split</div>
+                </div>
+              </div>
+              <div class="chart-card-body">
+                <canvas id="chartTeacherStatus"></canvas>
+              </div>
+            </div>
+
+            <!-- Chart 4: Students by Gender (Doughnut — full width) -->
+            <div class="chart-card chart-full">
+              <div class="chart-card-header">
+                <div class="chart-card-icon"><i class="fas fa-venus-mars"></i></div>
+                <div>
+                  <h3>Students by Gender</h3>
+                  <div class="sub">Boys vs Girls enrollment ratio</div>
+                </div>
+              </div>
+              <div class="chart-card-body">
+                <canvas id="chartStudentGender"></canvas>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="../components.js"></script>
+  <script>
+    // ===== Load Components =====
+    function loadComponents() {
+      fetch('header.html')
+        .then(r => r.text())
+        .then(data => document.getElementById('header-placeholder').innerHTML = data)
+        .catch(err => console.error('Error loading header:', err));
+
+      fetch('sidebar.html')
+        .then(r => r.text())
+        .then(data => document.getElementById('sidebar-placeholder').innerHTML = data)
+        .catch(err => console.error('Error loading sidebar:', err));
+    }
+
+    // ====================================================================
+    // FIX: Previously used initDashboard() which only built the charts
+    // and NEVER called updateStats(), so the 3 stat cards stayed at 0.
+    //
+    // NEW: Call filterByMonth('overall') on load — this resets the
+    // filtered arrays to the full dataset, then calls updateStats()
+    // AND rebuilds all 4 charts in one shot.
+    // ====================================================================
+    window.onload = function() {
+      loadComponents();
+      setTimeout(() => {
+        if (typeof window.initHeaderAndSidebar === 'function') {
+          window.initHeaderAndSidebar();
+        }
+      }, 400);
+
+      buildData();
+      populateMonthFilter();
+      filterByMonth('overall');   // ✅ FIX: populates stats + charts
+    };
+
+    // ===== Storage Helpers =====
+    function loadFromStorage(key) {
+      const stored = localStorage.getItem(key);
+      return stored ? JSON.parse(stored) : [];
+    }
+
+    // ===== Chart.js Global Defaults =====
+    Chart.defaults.font.family = "'Segoe UI', Roboto, system-ui, sans-serif";
+    Chart.defaults.font.size = 12;
+    Chart.defaults.color = '#64748b';
+    Chart.defaults.plugins.legend.labels.usePointStyle = true;
+    Chart.defaults.plugins.legend.labels.boxWidth = 8;
+    Chart.defaults.plugins.legend.labels.padding = 14;
+
+    // Palette
+    const COLORS = {
+      blue: 'rgba(37, 99, 235, 0.85)',
+      blueBorder: '#2563eb',
+      gray: 'rgba(100, 116, 139, 0.7)',
+      grayBorder: '#64748b',
+      pink: 'rgba(236, 72, 153, 0.85)',
+      pinkBorder: '#ec4899'
+    };
+
+    // ===== Chart Instances =====
+    const charts = {
+      studentsPerClass: null,
+      studentStatus: null,
+      teacherStatus: null,
+      studentGender: null
+    };
+
+    // ===== State =====
+    let classData = [];
+    let studentData = [];
+    let teacherData = [];
+    let filteredClassData = [];
+    let filteredStudentData = [];
+    let filteredTeacherData = [];
+    let selectedMonth = 'overall';
+    let availableMonths = [];
+
+    // ===== Build Data =====
+    function buildData() {
+      classData = loadFromStorage('messClasses');
+      studentData = loadFromStorage('messStudents');
+      teacherData = loadFromStorage('messTeachers');
+      
+      filteredClassData = [...classData];
+      filteredStudentData = [...studentData];
+      filteredTeacherData = [...teacherData];
+    }
+
+    // ===== Extract Months from Data =====
+    function extractAvailableMonths() {
+      const monthYearSet = new Set();
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                         'July', 'August', 'September', 'October', 'November', 'December'];
+
+      // Extract from student joining dates
+      studentData.forEach(s => {
+        if (s.joiningDate) {
+          const date = parseDate(s.joiningDate);
+          if (date) {
+            const month = monthNames[date.getMonth()];
+            const year = date.getFullYear();
+            monthYearSet.add(`${month} ${year}`);
+          }
+        }
+      });
+
+      // Extract from teacher joining dates
+      teacherData.forEach(t => {
+        if (t.joiningDate) {
+          const date = parseDate(t.joiningDate);
+          if (date) {
+            const month = monthNames[date.getMonth()];
+            const year = date.getFullYear();
+            monthYearSet.add(`${month} ${year}`);
+          }
+        }
+      });
+
+      // If no dates found, create default months for current year
+      if (monthYearSet.size === 0) {
+        const currentYear = new Date().getFullYear();
+        for (let i = 0; i < 12; i++) {
+          monthYearSet.add(`${monthNames[i]} ${currentYear}`);
+        }
+      }
+
+      availableMonths = Array.from(monthYearSet).sort();
+    }
+
+    // ===== Parse Date Utility =====
+    function parseDate(dateStr) {
+      if (!dateStr) return null;
+      try {
+        const date = new Date(dateStr);
+        if (!isNaN(date.getTime())) return date;
+      } catch (e) {}
+      return null;
+    }
+
+    // ===== Check if item belongs to month =====
+    function belongsToMonth(item, monthStr) {
+      if (!item || !item.joiningDate) return false;
+      const date = parseDate(item.joiningDate);
+      if (!date) return false;
+      
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                         'July', 'August', 'September', 'October', 'November', 'December'];
+      const month = monthNames[date.getMonth()];
+      const year = date.getFullYear();
+      
+      return `${month} ${year}` === monthStr;
+    }
+
+    // ===== Filter Classes by Month (based on students/teachers enrolled) =====
+    function filterClassesByMonth(monthStr, allClasses, allStudents, allTeachers) {
+      if (monthStr === 'overall') {
+        return allClasses;
+      }
+
+      // Get students in this month
+      const studentsInMonth = allStudents.filter(s => belongsToMonth(s, monthStr));
+      const studentClassIds = new Set(studentsInMonth.map(s => s.classId).filter(id => id));
+
+      // Get teachers in this month
+      const teachersInMonth = allTeachers.filter(t => belongsToMonth(t, monthStr));
+      const teacherClassIds = new Set(teachersInMonth.map(t => t.classId).filter(id => id));
+
+      // Return classes that have students or teachers in this month
+      return allClasses.filter(c => studentClassIds.has(c.id) || teacherClassIds.has(c.id));
+    }
+
+    // ===== Populate Month Filter Dropdown =====
+    function populateMonthFilter() {
+      extractAvailableMonths();
+      const dropdown = document.getElementById('monthFilter');
+      
+      availableMonths.forEach(monthYear => {
+        const option = document.createElement('option');
+        option.value = monthYear;
+        option.textContent = monthYear;
+        dropdown.appendChild(option);
+      });
+    }
+
+    // ===== Filter by Month =====
+    function filterByMonth(monthStr) {
+      selectedMonth = monthStr;
+      
+      if (monthStr === 'overall') {
+        filteredClassData = [...classData];
+        filteredStudentData = [...studentData];
+        filteredTeacherData = [...teacherData];
+      } else {
+        // Filter students and teachers by joining date
+        filteredStudentData = studentData.filter(s => belongsToMonth(s, monthStr));
+        filteredTeacherData = teacherData.filter(t => belongsToMonth(t, monthStr));
+        
+        // Filter classes based on which have students/teachers in this month
+        filteredClassData = filterClassesByMonth(monthStr, classData, studentData, teacherData);
+      }
+
+      updateStats();
+      buildStudentsPerClassChart();
+      buildStudentStatusChart();
+      buildTeacherStatusChart();
+      buildStudentGenderChart();
+    }
+
+    // ===== Update Stats =====
+    function updateStats() {
+      const totalClasses = filteredClassData.length;
+      const totalStudents = filteredStudentData.length;
+      const totalTeachers = filteredTeacherData.length;
+
+      document.getElementById('statTotalClasses').textContent = totalClasses;
+      document.getElementById('statTotalStudents').textContent = totalStudents;
+      document.getElementById('statTotalTeachers').textContent = totalTeachers;
+
+      // Update visual feedback for filtered data
+      if (selectedMonth !== 'overall' && totalClasses === 0) {
+        console.log(`📊 No classes had enrollments in ${selectedMonth}`);
+      }
+    }
+
+    // ===== Init Dashboard =====
+    function initDashboard() {
+      updateStats();   // ✅ ensure stats are populated (defensive)
+      buildStudentsPerClassChart();
+      buildStudentStatusChart();
+      buildTeacherStatusChart();
+      buildStudentGenderChart();
+    }
+
+    // ===== Helper: Empty state =====
+    function renderChartEmpty(canvas, message) {
+      const parent = canvas.parentElement;
+      if (!parent) return;
+      parent.innerHTML = `
+        <div class="chart-empty-state">
+          <i class="fas fa-chart-bar"></i>
+          <p>${message || 'No data available'}</p>
+        </div>
+      `;
+    }
+
+    // ============================================
+    // Chart 1: Students per Class (Horizontal Bar)
+    // ============================================
+    function buildStudentsPerClassChart() {
+      const canvas = document.getElementById('chartStudentsPerClass');
+      if (!canvas) return;
+      if (charts.studentsPerClass) charts.studentsPerClass.destroy();
+
+      if (filteredClassData.length === 0) {
+        renderChartEmpty(canvas, 'No classes available for this period');
+        return;
+      }
+
+      // Count ONLY filtered students per class
+      const counts = {};
+      filteredClassData.forEach(c => { counts[c.id] = 0; });
+      filteredStudentData.forEach(s => {
+        if (s.classId && counts[s.classId] !== undefined) counts[s.classId]++;
+      });
+
+      const sorted = [...filteredClassData]
+        .map(c => ({ name: c.name || c.id, count: counts[c.id] || 0 }))
+        .sort((a, b) => a.count - b.count);
+
+      const labels = sorted.map(x => x.name);
+      const data = sorted.map(x => x.count);
+      const bgColors = sorted.map((_, i) => {
+        const shade = 0.55 + (i / Math.max(1, sorted.length - 1)) * 0.4;
+        return `rgba(37, 99, 235, ${shade.toFixed(2)})`;
+      });
+
+      charts.studentsPerClass = new Chart(canvas.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Students',
+            data,
+            backgroundColor: bgColors,
+            borderColor: '#2563eb',
+            borderWidth: 2,
+            borderRadius: 0,
+            barPercentage: 0.7,
+            categoryPercentage: 0.8
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1e293b',
+              padding: 12,
+              titleFont: { size: 12, weight: 'bold' },
+              bodyFont: { size: 11 },
+              callbacks: {
+                label: (ctx) => ` ${ctx.parsed.x} student${ctx.parsed.x === 1 ? '' : 's'}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: { font: { size: 11 }, stepSize: 1, precision: 0 },
+              grid: { color: '#f1f5f9' },
+              title: {
+                display: true,
+                text: 'Number of Students',
+                font: { size: 11, weight: '600' },
+                color: '#475569'
+              }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { font: { size: 11, weight: '600' }, color: '#334155' }
+            }
+          }
+        }
+      });
+    }
+
+    // ============================================
+    // Chart 2: Active vs Inactive Students (Pie)
+    // ============================================
+    function buildStudentStatusChart() {
+      const canvas = document.getElementById('chartStudentStatus');
+      if (!canvas) return;
+      if (charts.studentStatus) charts.studentStatus.destroy();
+
+      const active = filteredStudentData.filter(s => (s.status || 'Active') === 'Active').length;
+      const inactive = filteredStudentData.length - active;
+
+      if (active + inactive === 0) {
+        renderChartEmpty(canvas, 'No student data');
+        return;
+      }
+
+      charts.studentStatus = new Chart(canvas.getContext('2d'), {
+        type: 'pie',
+        data: {
+          labels: ['Active', 'Inactive'],
+          datasets: [{
+            data: [active, inactive],
+            backgroundColor: [COLORS.blue, COLORS.gray],
+            borderColor: [COLORS.blueBorder, COLORS.grayBorder],
+            borderWidth: 2,
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { padding: 14, font: { size: 11, weight: '600' } }
+            },
+            tooltip: {
+              backgroundColor: '#1e293b',
+              padding: 12,
+              callbacks: {
+                label: (ctx) => {
+                  const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                  const pct = total > 0 ? Math.round((ctx.parsed / total) * 100) : 0;
+                  return ` ${ctx.label}: ${ctx.parsed} (${pct}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // ============================================
+    // Chart 3: Active vs Inactive Teachers (Pie)
+    // ============================================
+    function buildTeacherStatusChart() {
+      const canvas = document.getElementById('chartTeacherStatus');
+      if (!canvas) return;
+      if (charts.teacherStatus) charts.teacherStatus.destroy();
+
+      const active = filteredTeacherData.filter(t => (t.status || 'Active') === 'Active').length;
+      const inactive = filteredTeacherData.length - active;
+
+      if (active + inactive === 0) {
+        renderChartEmpty(canvas, 'No teacher data');
+        return;
+      }
+
+      charts.teacherStatus = new Chart(canvas.getContext('2d'), {
+        type: 'pie',
+        data: {
+          labels: ['Active', 'Inactive'],
+          datasets: [{
+            data: [active, inactive],
+            backgroundColor: [COLORS.blue, COLORS.gray],
+            borderColor: [COLORS.blueBorder, COLORS.grayBorder],
+            borderWidth: 2,
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { padding: 14, font: { size: 11, weight: '600' } }
+            },
+            tooltip: {
+              backgroundColor: '#1e293b',
+              padding: 12,
+              callbacks: {
+                label: (ctx) => {
+                  const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                  const pct = total > 0 ? Math.round((ctx.parsed / total) * 100) : 0;
+                  return ` ${ctx.label}: ${ctx.parsed} (${pct}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // ============================================
+    // Chart 4: Students by Gender (Doughnut)
+    // ============================================
+    function buildStudentGenderChart() {
+      const canvas = document.getElementById('chartStudentGender');
+      if (!canvas) return;
+      if (charts.studentGender) charts.studentGender.destroy();
+
+      const male = filteredStudentData.filter(s => {
+        const g = (s.gender || '').toLowerCase();
+        return g === 'male' || g === 'm' || g === 'boy' || g === 'boys';
+      }).length;
+
+      const female = filteredStudentData.filter(s => {
+        const g = (s.gender || '').toLowerCase();
+        return g === 'female' || g === 'f' || g === 'girl' || g === 'girls';
+      }).length;
+
+      const other = filteredStudentData.length - male - female;
+
+      if (male + female + other === 0) {
+        renderChartEmpty(canvas, 'No gender data');
+        return;
+      }
+
+      charts.studentGender = new Chart(canvas.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Boys', 'Girls', 'Other/Unspecified'],
+          datasets: [{
+            data: [male, female, other],
+            backgroundColor: [COLORS.blue, COLORS.pink, COLORS.gray],
+            borderColor: [COLORS.blueBorder, COLORS.pinkBorder, COLORS.grayBorder],
+            borderWidth: 2,
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '62%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { padding: 14, font: { size: 11, weight: '600' } }
+            },
+            tooltip: {
+              backgroundColor: '#1e293b',
+              padding: 12,
+              callbacks: {
+                label: (ctx) => {
+                  const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                  const pct = total > 0 ? Math.round((ctx.parsed / total) * 100) : 0;
+                  return ` ${ctx.label}: ${ctx.parsed} (${pct}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // ============================================
+    // EXCEL EXPORT FUNCTION
+    // ============================================
+    async function downloadExcelReport() {
+      const btn = document.getElementById('exportBtn');
+      btn.disabled = true;
+      const progress = document.getElementById('exportProgress');
+      const progressFill = document.getElementById('progressFill');
+      progress.classList.add('show');
+
+      try {
+        const wb = XLSX.utils.book_new();
+        
+        // Determine which data to export
+        let dataToExport;
+        if (selectedMonth === 'overall') {
+          dataToExport = {
+            classes: classData,
+            students: studentData,
+            teachers: teacherData
+          };
+        } else {
+          // Export only data from the selected month
+          dataToExport = {
+            classes: filteredClassData,
+            students: filteredStudentData,
+            teachers: filteredTeacherData
+          };
+        }
+
+        progressFill.style.width = '33%';
+        // Classes Sheet
+        const classesData = dataToExport.classes.map(c => ({
+          'Class ID': c.id,
+          'Class Name': c.name,
+          'Session': c.session,
+          'Grade': c.grade,
+          'Section': c.section,
+          'Status': c.status
+        }));
+        const ws1 = XLSX.utils.json_to_sheet(classesData);
+        XLSX.utils.book_append_sheet(wb, ws1, 'Classes');
+
+        progressFill.style.width = '66%';
+        // Students Sheet
+        const studentsData = dataToExport.students.map(s => ({
+          'Reg. No.': s.regNo,
+          'Student Name': s.studentName,
+          'Father Name': s.fatherName,
+          'Class': s.className,
+          'Gender': s.gender,
+          'Phone': s.phoneNumber,
+          'CNIC': s.cnic,
+          'Email': s.email,
+          'DOB': s.dob,
+          'Address': s.address,
+          'Guardian Name': s.guardianName,
+          'Guardian Phone': s.guardianPhone,
+          'Status': s.status,
+          'Joining Date': s.joiningDate
+        }));
+        const ws2 = XLSX.utils.json_to_sheet(studentsData);
+        XLSX.utils.book_append_sheet(wb, ws2, 'Students');
+
+        progressFill.style.width = '85%';
+        // Teachers Sheet
+        const teachersData = dataToExport.teachers.map(t => ({
+          'Reg. No.': t.regNo,
+          'Teacher Name': t.teacherName,
+          'Father Name': t.fatherName,
+          'Qualification': t.qualification,
+          'Subject': t.subjectsCanTeach,
+          'Phone': t.phoneNumber,
+          'CNIC': t.cnic,
+          'Email': t.email,
+          'Gender': t.gender,
+          'DOB': t.dob,
+          'Address': t.address,
+          'Experience': t.experience,
+          'Designation': t.designation,
+          'Previous School': t.previousSchool,
+          'Status': t.status,
+          'Joining Date': t.joiningDate
+        }));
+        const ws3 = XLSX.utils.json_to_sheet(teachersData);
+        XLSX.utils.book_append_sheet(wb, ws3, 'Teachers');
+
+        // Set column widths
+        [ws1, ws2, ws3].forEach(ws => {
+          ws['!cols'] = [{wch: 14}, {wch: 18}, {wch: 18}, {wch: 14}, {wch: 12}, {wch: 14}];
+        });
+
+        progressFill.style.width = '100%';
+        const filename = selectedMonth === 'overall' 
+          ? `MEI_CST_Report_${new Date().toISOString().split('T')[0]}.xlsx`
+          : `MEI_CST_Report_${selectedMonth.replace(' ', '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
+        
+        XLSX.writeFile(wb, filename);
+
+        setTimeout(() => {
+          progress.classList.remove('show');
+          progressFill.style.width = '0%';
+          showToast('✅ Excel report downloaded successfully!');
+        }, 400);
+      } catch (error) {
+        console.error('Export error:', error);
+        showToast('❌ Error generating report. Please try again.');
+        progress.classList.remove('show');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // ===== Toast Notification =====
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'toast-msg';
+      toast.innerHTML = `<i class="fas fa-bell"></i> ${message}`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+  </script>
+</body>
+</html>

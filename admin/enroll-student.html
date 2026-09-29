@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEI – Enroll Student</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../components.css">
+  <link rel="stylesheet" href="../responsive-components.css">
+  <style>
+    /* ============================================
+       INTERNAL CSS - Unified Design System
+       Based on: enroll.css / fee.css / view-details.css
+       Blue Theme | Full Width | Responsive
+       ============================================ */
+
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, Roboto, sans-serif;
+    }
+
+    body {
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    /* ===== MAIN PANEL ===== */
+    .main-panel {
+      flex: 1;
+      padding: 40px 32px;
+      background: #f8fafc;
+      min-height: calc(100vh - 70px);
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: white;
+      padding: 24px 32px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e9eef3;
+    }
+
+    .page-header .header-content h1 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .page-header .header-content h1 i {
+      color: #2563eb;
+      background: none;
+      -webkit-text-fill-color: #2563eb;
+    }
+
+    .page-header .header-content p {
+      color: #475569;
+      margin-top: 8px;
+      font-size: 15px;
+      border-left: 3px solid #3b82f6;
+      padding-left: 16px;
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: white;
+      padding: 40px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.07);
+      border: 1px solid #f1f5f9;
+      margin-bottom: 28px;
+    }
+
+    .card-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-title i {
+      color: #2563eb;
+      font-size: 22px;
+    }
+
+    /* ===== GRID LAYOUTS ===== */
+    .form-grid-5cols {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px;
+    }
+
+    .form-grid-4cols {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    /* ===== FORM GROUPS ===== */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group label {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group label i {
+      color: #2563eb;
+      width: 18px;
+      text-align: center;
+    }
+
+    .req {
+      color: #ef4444;
+      margin-left: 3px;
+    }
+
+    /* ===== FORM CONTROLS ===== */
+    .form-control {
+      padding: 14px 16px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 0;
+      font-size: 15.2px;
+      color: #1e293b;
+      transition: all 0.25s;
+      background: white;
+      width: 100%;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+    }
+
+    .form-control:disabled {
+      background: #f8fafc;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+
+    select.form-control {
+      cursor: pointer;
+    }
+
+    /* ===== PHOTO SECTION ===== */
+    .photo-section {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .photo-container {
+      text-align: center;
+      min-width: 170px;
+    }
+
+    .photo-heading {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 14px;
+    }
+
+    .photo-heading i {
+      color: #2563eb;
+    }
+
+    .photo-frame {
+      width: 145px;
+      height: 180px;
+      border: 3px solid #cbd5e1;
+      background: #f8fafc;
+      position: relative;
+      overflow: hidden;
+      margin: 0 auto 12px;
+      cursor: pointer;
+    }
+
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .photo-frame.has-image img {
+      display: block;
+    }
+
+    .photo-frame i {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 38px;
+      color: #2563eb;
+    }
+
+    .photo-frame.has-image i {
+      display: none;
+    }
+
+    .file-name {
+      font-size: 13px;
+      color: #64748b;
+      padding: 0 8px;
+    }
+
+    /* ===== RADIO GROUP ===== */
+    .radio-group {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      height: 48px;
+    }
+
+    .radio-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      color: #334155;
+      cursor: pointer;
+    }
+
+    .radio-label input[type="radio"] {
+      accent-color: #2563eb;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 40px;
+      padding-top: 28px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .btn {
+      padding: 13px 28px;
+      border: none;
+      border-radius: 0;
+      font-size: 15.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+    }
+
+    .btn i {
+      color: inherit;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-primary i {
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-secondary {
+      background: #f8fafc;
+      color: #334155;
+      border: 1.5px solid #e2e8f0;
+    }
+
+    .btn-secondary i {
+      color: #2563eb;
+    }
+
+    .btn-secondary:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    /* ===== TOAST NOTIFICATIONS ===== */
+    .toast-msg {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1e293b;
+      color: white;
+      padding: 16px 28px;
+      border-radius: 0;
+      font-size: 15px;
+      font-weight: 500;
+      z-index: 9999;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideUp 0.35s ease;
+    }
+
+    .toast-msg i {
+      color: #3b82f6;
+      font-size: 20px;
+    }
+
+    .toast-msg.toast-success {
+      background: #065f46;
+    }
+
+    .toast-msg.toast-success i {
+      color: #6ee7b7;
+    }
+
+    @keyframes slideUp {
+      0% { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================
+       RESPONSIVE BREAKPOINTS
+       ============================================ */
+
+    /* ===== LARGE DESKTOP (1200px and below) ===== */
+    @media (max-width: 1200px) {
+      .form-grid-5cols {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .form-grid-4cols {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ===== TABLET / SMALL DESKTOP (992px and below) ===== */
+    @media (max-width: 992px) {
+      .main-panel {
+        padding: 32px 24px;
+      }
+
+      .page-header {
+        padding: 20px 24px;
+      }
+
+      .page-header .header-content h1 {
+        font-size: 24px;
+      }
+
+      .page-header .header-content p {
+        font-size: 14px;
+      }
+
+      .card {
+        padding: 32px 24px;
+      }
+
+      .card-title {
+        font-size: 17px;
+      }
+
+      .form-grid-5cols {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ===== MOBILE (768px and below) ===== */
+    @media (max-width: 768px) {
+      .main-panel {
+        padding: 24px 20px;
+      }
+
+      .page-header {
+        padding: 20px 24px;
+      }
+
+      .page-header .header-content h1 {
+        font-size: 22px;
+      }
+
+      .page-header .header-content p {
+        font-size: 14px;
+        padding-left: 12px;
+      }
+
+      .card {
+        padding: 24px;
+      }
+
+      .card-title {
+        font-size: 17px;
+      }
+
+      /* All grids become single column */
+      .form-grid-5cols,
+      .form-grid-4cols {
+        grid-template-columns: 1fr;
+      }
+
+      /* Photo section stacks vertically — inner wrapper becomes full width */
+      .photo-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 24px;
+      }
+
+      .photo-section > div:last-child {
+        width: 100%;
+        flex: 1 1 auto;
+      }
+
+      .photo-container {
+        min-width: auto;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .photo-frame {
+        width: 120px;
+        height: 150px;
+      }
+
+      /* Radio group */
+      .radio-group {
+        height: auto;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 8px 0;
+      }
+
+      /* Buttons stack vertically */
+      .btn-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        justify-content: center;
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+
+      /* Form controls */
+      .form-control {
+        padding: 12px 14px;
+        font-size: 14px;
+      }
+
+      .form-group label {
+        font-size: 13.5px;
+      }
+
+      .form-group label i {
+        width: 16px;
+        font-size: 14px;
+      }
+
+      /* Toast */
+      .toast-msg {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        padding: 14px 20px;
+        font-size: 14px;
+        text-align: center;
+        justify-content: center;
+      }
+    }
+
+    /* ===== SMALL MOBILE (480px and below) ===== */
+    @media (max-width: 480px) {
+      .main-panel {
+        padding: 16px 12px;
+      }
+
+      .page-header {
+        padding: 16px 18px;
+      }
+
+      .page-header .header-content h1 {
+        font-size: 19px;
+      }
+
+      .page-header .header-content p {
+        font-size: 13px;
+        padding-left: 10px;
+      }
+
+      .card {
+        padding: 18px 16px;
+      }
+
+      .card-title {
+        font-size: 15px;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+      }
+
+      .card-title i {
+        font-size: 18px;
+      }
+
+      .form-control {
+        padding: 10px 12px;
+        font-size: 13.5px;
+      }
+
+      .photo-frame {
+        width: 100px;
+        height: 130px;
+      }
+
+      .photo-frame i {
+        font-size: 30px;
+      }
+
+      .btn {
+        padding: 10px 16px;
+        font-size: 13px;
+        gap: 6px;
+      }
+
+      .btn-actions {
+        gap: 10px;
+        margin-top: 28px;
+        padding-top: 20px;
+      }
+
+      .req {
+        font-size: 12px;
+      }
+
+      .toast-msg {
+        padding: 12px 16px;
+        font-size: 13px;
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+      }
+
+      .form-group label i {
+        width: 14px;
+        font-size: 13px;
+      }
+    }
+
+    /* ===== PRINT STYLES ===== */
+    @media print {
+      .btn-actions,
+      .photo-frame {
+        display: none;
+      }
+      .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+      .page-header {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header will be loaded here -->
+  <div id="header-placeholder"></div>
+
+  <div class="app-wrapper" id="appWrapper">
+    <!-- Sidebar will be loaded here -->
+    <div id="sidebar-placeholder"></div>
+
+    <main class="main-panel">
+     <div class="page-header">
+  <div class="header-content">
+    <h1>
+      <i class="fas fa-user-graduate icon"></i>
+      <span id="pageTitleText">Enroll Student</span>
+    </h1>
+    <p id="pageSubtitle">Enroll a new student, assign them to a class with an auto-generated registration number, and add their guardian's details.</p>
+  </div>
+</div>
+
+      <form id="studentForm" onsubmit="handleStudentSubmit(event)">
+        <!-- 1. Class Selection -->
+        <div class="card">
+          <div class="card-title">
+            <i class="fas fa-chalkboard"></i> Class Assignment
+            <span id="classLockNotice" style="display:none; font-size:12px; font-weight:600; color:#b45309; background:#fef3c7; padding:4px 10px; border-radius:6px; margin-left:auto;">
+              <i class="fas fa-lock"></i> Class and Reg No. locked in edit mode
+            </span>
+          </div>
+          <div class="form-grid-5cols">
+            <div class="form-group">
+              <label><i class="fas fa-chalkboard-teacher"></i> Class Name <span class="req">*</span></label>
+              <select class="form-control" id="classSelect" onchange="onClassSelected()" required>
+                <option value="">-- Select Class --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-id-card"></i> Class ID</label>
+              <input type="text" class="form-control" id="s_classId" disabled placeholder="Class ID">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-calendar-alt"></i> Session</label>
+              <input type="text" class="form-control" id="s_session" disabled placeholder="Session">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-layer-group"></i> Grade</label>
+              <input type="text" class="form-control" id="s_grade" disabled placeholder="Grade">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-tags"></i> Section</label>
+              <input type="text" class="form-control" id="s_section" disabled placeholder="Section">
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Student Personal Information -->
+        <div class="card">
+          <div class="card-title">
+            <i class="fas fa-user"></i> Student Personal Details
+          </div>
+
+          <div class="photo-section">
+            <div class="photo-container">
+              <div class="photo-heading">Student Photo</div>
+              <div class="photo-frame" id="photoFrame" onclick="document.getElementById('photoInput').click()">
+                <i class="fas fa-camera"></i>
+                <img id="photoPreview" alt="Student Photo">
+              </div>
+              <div class="file-name" id="fileName">Click to upload photo</div>
+              <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhotoSelect(event)">
+            </div>
+
+            <div style="flex:1;">
+              <div class="form-grid-4cols">
+                <div class="form-group">
+                  <label><i class="fas fa-hashtag"></i> Registration No. <span class="req">*</span></label>
+                  <input type="text" class="form-control" id="regNo" placeholder="Auto-generated" readonly required>
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-user"></i> Student Name <span class="req">*</span></label>
+                  <input type="text" class="form-control" id="studentName" placeholder="Full name" required>
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-user-tie"></i> Father Name</label>
+                  <input type="text" class="form-control" id="fatherName" placeholder="Father name">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-phone"></i> Phone Number</label>
+                  <input type="text" class="form-control" id="phone" placeholder="XXXX-XXXXXXX" maxlength="12">
+                </div>
+
+                <div class="form-group">
+                  <label><i class="fas fa-id-card"></i> CNIC / B-Form</label>
+                  <input type="text" class="form-control" id="cnic" placeholder="XXXXX-XXXXXXX-X" maxlength="15">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-envelope"></i> Email</label>
+                  <input type="email" class="form-control" id="email" placeholder="student@example.com">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-venus-mars"></i> Gender</label>
+                  <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="gender" value="Male" checked> Male</label>
+                    <label class="radio-label"><input type="radio" name="gender" value="Female"> Female</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-calendar-day"></i> Date of Birth</label>
+                  <input type="date" class="form-control" id="dob">
+                </div>
+
+                <div class="form-group">
+                  <label><i class="fas fa-globe"></i> Nationality</label>
+                  <input type="text" class="form-control" id="nationality" value="Pakistani">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-pray"></i> Religion</label>
+                  <input type="text" class="form-control" id="religion" value="Islam">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-sign-in-alt"></i> Joining Date</label>
+                  <input type="date" class="form-control" id="joiningDate">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-map-marker-alt"></i> Residential Address</label>
+                  <input type="text" class="form-control" id="address" placeholder="Address">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Guardian Information -->
+        <div class="card">
+          <div class="card-title">
+            <i class="fas fa-users"></i> Guardian Information
+          </div>
+          <div class="form-grid-5cols">
+            <div class="form-group">
+              <label><i class="fas fa-user-shield"></i> Guardian Name <span class="req">*</span></label>
+              <input type="text" class="form-control" id="guardianName" placeholder="Guardian name" required>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-heart"></i> Relationship</label>
+              <select class="form-control" id="guardianRelationship">
+                <option value="Father" selected>Father</option>
+                <option value="Mother">Mother</option>
+                <option value="Brother">Brother</option>
+                <option value="Uncle">Sister</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-phone"></i> Guardian Phone</label>
+              <input type="text" class="form-control" id="guardianPhone" placeholder="XXXX-XXXXXXX" maxlength="12">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-id-card"></i> Guardian CNIC</label>
+              <input type="text" class="form-control" id="guardianCnic" placeholder="XXXXX-XXXXXXX-X" maxlength="15">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-briefcase"></i> Occupation</label>
+              <input type="text" class="form-control" id="guardianOccupation" placeholder="Profession / Job">
+            </div>
+          </div>
+
+          <div class="btn-actions">
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              <i class="fas fa-user-plus"></i> Enroll Student
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="resetStudentForm()">
+              <i class="fas fa-undo"></i> Reset
+            </button>
+            <a href="student-details.html" class="btn btn-secondary">
+              <i class="fas fa-eye"></i> View Student Details
+            </a>
+            <a href="dashboard.html" class="btn btn-secondary">
+              <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+          </div>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <script src="../components.js"></script>
+  <script>
+    let editingRegNo = null;
+
+    // ================= COMPONENT LOADING (HEADER & SIDEBAR) =================
+    function loadComponents() {
+      // Load Header
+      fetch('header.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('header-placeholder').innerHTML = data;
+        })
+        .catch(err => console.error('Error loading header:', err));
+
+      // Load Sidebar
+      fetch('sidebar.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('sidebar-placeholder').innerHTML = data;
+        })
+        .catch(err => console.error('Error loading sidebar:', err));
+    }
+
+    // ================= STORAGE HELPERS =================
+    function loadClasses() {
+      try {
+        const stored = localStorage.getItem('messClasses');
+        return stored ? JSON.parse(stored) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function loadStudents() {
+      try {
+        const stored = localStorage.getItem('messStudents');
+        return stored ? JSON.parse(stored) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveStudents(students) {
+      localStorage.setItem('messStudents', JSON.stringify(students));
+    }
+
+    // ================= TOAST HELPERS =================
+    // Generic info/warning toast (uses existing .toast-msg style)
+    function showToast(msg) {
+      let t = document.createElement('div');
+      t.className = 'toast-msg';
+      t.innerHTML = `<i class="fas fa-info-circle"></i> ${msg}`;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2400);
+    }
+
+    // Success toast (green style) — used for enrollment/update confirmations
+    function showSuccessToast(msg) {
+      let t = document.createElement('div');
+      t.className = 'toast-msg toast-success';
+      t.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2600);
+    }
+
+    // ================= AUTO FORMATTERS (hyphen insertion) =================
+    // Formats a phone number as XXXX-XXXXXXX (11 digits with hyphen after 4)
+    function attachPhoneFormatter(inputId) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      input.addEventListener('input', function() {
+        let digits = this.value.replace(/\D/g, '').substring(0, 11);
+        if (digits.length > 4) {
+          this.value = digits.substring(0, 4) + '-' + digits.substring(4);
+        } else {
+          this.value = digits;
+        }
+      });
+    }
+
+    // Formats CNIC as XXXXX-XXXXXXX-X (13 digits, hyphens after 5 and 12)
+    function attachCnicFormatter(inputId) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      input.addEventListener('input', function() {
+        let digits = this.value.replace(/\D/g, '').substring(0, 13);
+        let formatted = '';
+        if (digits.length > 0) {
+          formatted = digits.substring(0, 5);
+          if (digits.length > 5) {
+            formatted += '-' + digits.substring(5, 12);
+          }
+          if (digits.length > 12) {
+            formatted += '-' + digits.substring(12);
+          }
+        }
+        this.value = formatted;
+      });
+    }
+
+    // Initialize everything after components are loaded
+    window.addEventListener('load', function() {
+      loadComponents();
+
+      // Give time for HTML to load then initialize JS
+      setTimeout(() => {
+        if (typeof window.initHeaderAndSidebar === 'function') {
+          window.initHeaderAndSidebar();
+        }
+      }, 400);
+
+      // Existing page initialization
+      populateClassDropdown();
+      setDefaultDates();
+
+      // Attach auto-formatters for phone and CNIC fields
+      attachPhoneFormatter('phone');
+      attachPhoneFormatter('guardianPhone');
+      attachCnicFormatter('cnic');
+      attachCnicFormatter('guardianCnic');
+
+      const params = new URLSearchParams(window.location.search);
+      const editReg = params.get('edit');
+      if (editReg) {
+        enterEditMode(editReg);
+      }
+    });
+
+    function setDefaultDates() {
+      const today = new Date().toISOString().split('T')[0];
+      const jInput = document.getElementById('joiningDate');
+      if (!jInput.value) jInput.value = today;
+    }
+
+    function populateClassDropdown() {
+      const select = document.getElementById('classSelect');
+      const classes = loadClasses();
+      select.innerHTML = '<option value="">-- Select Class --</option>' +
+        classes.map(c => `<option value="${c.id}">${c.name} (${c.grade} - ${c.section})</option>`).join('');
+    }
+
+    function onClassSelected() {
+      const select = document.getElementById('classSelect');
+      const classes = loadClasses();
+      const cls = classes.find(c => c.id === select.value);
+
+      if (!cls) {
+        document.getElementById('s_classId').value = '';
+        document.getElementById('s_session').value = '';
+        document.getElementById('s_grade').value = '';
+        document.getElementById('s_section').value = '';
+        if (!editingRegNo) document.getElementById('regNo').value = '';
+        return;
+      }
+
+      document.getElementById('s_classId').value = cls.id;
+      document.getElementById('s_session').value = cls.session || '';
+      document.getElementById('s_grade').value = cls.grade || '';
+      document.getElementById('s_section').value = cls.section || '';
+
+      if (!editingRegNo) {
+        generateStudentRegNo(cls);
+      }
+    }
+
+    // ====================================================================
+    // FIXED: generateStudentRegNo()
+    // Previously used classStudents.length + 1 which caused duplicate
+    // registration numbers after deletions.
+    //
+    // NEW LOGIC: Scans all existing students in the same session/section,
+    // finds the highest sequence number, and uses max + 1.
+    // This guarantees uniqueness even after deletions (no number reuse).
+    // ====================================================================
+    function generateStudentRegNo(cls) {
+      let sessionYear = '2026';
+      if (cls.session && cls.session.includes('-')) {
+        sessionYear = cls.session.split('-')[1].replace(/\D/g, '') || '2026';
+      }
+      const section = (cls.section || 'A').toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const prefix = `S.MEI-${sessionYear}-${section}-`;
+
+      const allStudents = loadStudents();
+
+      // Find all students with the same prefix (same session + section)
+      const matchingStudents = allStudents.filter(s =>
+        s.regNo && s.regNo.toUpperCase().startsWith(prefix.toUpperCase())
+      );
+
+      // Extract the highest existing sequence number
+      let maxSeq = 0;
+      matchingStudents.forEach(s => {
+        const suffix = s.regNo.substring(prefix.length);
+        const num = parseInt(suffix.replace(/\D/g, ''), 10);
+        if (!isNaN(num) && num > maxSeq) {
+          maxSeq = num;
+        }
+      });
+
+      const nextSeq = String(maxSeq + 1).padStart(2, '0');
+      document.getElementById('regNo').value = `${prefix}${nextSeq}`;
+    }
+
+    function handlePhotoSelect(e) {
+      const file = e.target.files[0];
+      if (file) {
+        document.getElementById('fileName').textContent = file.name;
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const img = document.getElementById('photoPreview');
+          img.src = ev.target.result;
+          document.getElementById('photoFrame').classList.add('has-image');
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function enterEditMode(regNo) {
+      const students = loadStudents();
+      const s = students.find(x => x.regNo.toLowerCase() === regNo.toLowerCase());
+      if (!s) {
+        showToast('⚠️ Student not found');
+        return;
+      }
+
+      editingRegNo = regNo;
+      document.getElementById('pageTitleText').textContent = 'Edit Student Details';
+      document.getElementById('pageSubtitle').textContent = `Updating information for ${s.studentName} (${s.regNo}).`;
+      document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Update Student';
+      document.getElementById('classLockNotice').style.display = 'inline-block';
+
+      // Select and lock class
+      const classSelect = document.getElementById('classSelect');
+      classSelect.value = s.classId;
+      classSelect.disabled = true;
+      onClassSelected();
+
+      document.getElementById('regNo').value = s.regNo;
+      document.getElementById('studentName').value = s.studentName || '';
+      document.getElementById('fatherName').value = s.fatherName || '';
+      document.getElementById('phone').value = s.phoneNumber || '';
+      document.getElementById('cnic').value = s.cnic || '';
+      document.getElementById('email').value = s.email || '';
+      document.getElementById('dob').value = s.dob || '';
+      document.getElementById('nationality').value = s.nationality || 'Pakistani';
+      document.getElementById('religion').value = s.religion || 'Islam';
+      document.getElementById('joiningDate').value = s.joiningDate || '';
+      document.getElementById('address').value = s.address || '';
+
+      if (s.gender) {
+        const rad = document.querySelector(`input[name="gender"][value="${s.gender}"]`);
+        if (rad) rad.checked = true;
+      }
+
+      document.getElementById('guardianName').value = s.guardianName || '';
+      document.getElementById('guardianRelationship').value = s.guardianRelationship || 'Father';
+      document.getElementById('guardianPhone').value = s.guardianPhone || '';
+      document.getElementById('guardianCnic').value = s.guardianCnic || '';
+      document.getElementById('guardianOccupation').value = s.guardianOccupation || '';
+
+      if (s.photoUrl) {
+        document.getElementById('photoPreview').src = s.photoUrl;
+        document.getElementById('photoFrame').classList.add('has-image');
+        document.getElementById('fileName').textContent = 'Enrolled photo';
+      }
+    }
+
+    function handleStudentSubmit(e) {
+      e.preventDefault();
+
+      const studentName = document.getElementById('studentName').value.trim();
+      const guardianName = document.getElementById('guardianName').value.trim();
+
+      if (!studentName || !guardianName) {
+        showToast('⚠️ Student Name and Guardian Name are required');
+        return;
+      }
+
+      const students = loadStudents();
+
+      // EDIT MODE
+      if (editingRegNo) {
+        const idx = students.findIndex(s => s.regNo.toLowerCase() === editingRegNo.toLowerCase());
+        if (idx === -1) {
+          showToast('⚠️ Student record not found');
+          return;
+        }
+
+        const existing = students[idx];
+        const genderVal = document.querySelector('input[name="gender"]:checked')?.value || 'Male';
+        const photoSrc = document.getElementById('photoPreview').src;
+
+        students[idx] = {
+          ...existing,
+          studentName: studentName,
+          fatherName: document.getElementById('fatherName').value.trim(),
+          phoneNumber: document.getElementById('phone').value.trim(),
+          cnic: document.getElementById('cnic').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          gender: genderVal,
+          dob: document.getElementById('dob').value,
+          nationality: document.getElementById('nationality').value.trim(),
+          religion: document.getElementById('religion').value.trim(),
+          joiningDate: document.getElementById('joiningDate').value,
+          address: document.getElementById('address').value.trim(),
+          guardianName: guardianName,
+          guardianRelationship: document.getElementById('guardianRelationship').value,
+          guardianPhone: document.getElementById('guardianPhone').value.trim(),
+          guardianCnic: document.getElementById('guardianCnic').value.trim(),
+          guardianOccupation: document.getElementById('guardianOccupation').value.trim(),
+          photoUrl: (photoSrc && photoSrc.startsWith('data:')) ? photoSrc : existing.photoUrl
+        };
+
+        saveStudents(students);
+        showSuccessToast(`Student "${studentName}" is updated successfully`);
+        setTimeout(() => {
+          window.location.href = 'student-details.html';
+        }, 900);
+        return;
+      }
+
+      // CREATE MODE
+      const classId = document.getElementById('classSelect').value;
+      const classes = loadClasses();
+      const cls = classes.find(c => c.id === classId);
+
+      if (!cls) {
+        showToast('⚠️ Please select a valid class');
+        return;
+      }
+
+      const regNo = document.getElementById('regNo').value.trim();
+      if (!regNo) {
+        showToast('⚠️ Registration Number missing');
+        return;
+      }
+
+      if (students.some(s => s.regNo.toLowerCase() === regNo.toLowerCase())) {
+        showToast(`⚠️ Student with Reg No "${regNo}" already exists`);
+        return;
+      }
+
+      const genderVal = document.querySelector('input[name="gender"]:checked')?.value || 'Male';
+      const photoSrc = document.getElementById('photoPreview').src;
+
+      const newStudent = {
+        regNo: regNo,
+        studentName: studentName,
+        fatherName: document.getElementById('fatherName').value.trim(),
+        phoneNumber: document.getElementById('phone').value.trim(),
+        cnic: document.getElementById('cnic').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        gender: genderVal,
+        dob: document.getElementById('dob').value,
+        nationality: document.getElementById('nationality').value.trim() || 'Pakistani',
+        religion: document.getElementById('religion').value.trim() || 'Islam',
+        joiningDate: document.getElementById('joiningDate').value,
+        address: document.getElementById('address').value.trim(),
+        guardianName: guardianName,
+        guardianRelationship: document.getElementById('guardianRelationship').value,
+        guardianPhone: document.getElementById('guardianPhone').value.trim(),
+        guardianCnic: document.getElementById('guardianCnic').value.trim(),
+        guardianOccupation: document.getElementById('guardianOccupation').value.trim(),
+        photoUrl: (photoSrc && photoSrc.startsWith('data:')) ? photoSrc : null,
+        classId: cls.id,
+        className: cls.name,
+        session: cls.session,
+        grade: cls.grade,
+        section: cls.section,
+        status: 'Active',
+        password: 'MESS',
+        enrolledAt: new Date().toISOString()
+      };
+
+      students.push(newStudent);
+      saveStudents(students);
+      showSuccessToast(`Student "${studentName}" is enrolled successfully in ${cls.name}`);
+      resetStudentForm();
+    }
+
+    function resetStudentForm() {
+      if (editingRegNo) {
+        window.location.href = 'student-details.html';
+        return;
+      }
+      document.getElementById('studentForm').reset();
+      document.getElementById('regNo').value = '';
+      document.getElementById('photoPreview').src = '';
+      document.getElementById('photoFrame').classList.remove('has-image');
+      document.getElementById('fileName').textContent = 'Click to upload photo';
+      setDefaultDates();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>MEI · Portal Login</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <main class="page">
+    <!-- LEFT: Brand (logo + school name) -->
+    <section class="brand-panel" aria-label="Institute introduction">
+      <div class="wordmark">
+        <div class="mark" id="logoTrigger" role="button" tabindex="0" aria-label="View logo full size">
+          <img src="logo.png" alt="Muhammad Education Institute Logo" />
+        </div>
+        <span class="school-name">Muhammad Education Institute</span>
+      </div>
+      <div class="brand-copy">
+        <p class="kicker">Learn with intent</p>
+        <h1>Make your next move count.</h1>
+        <p>One place for your Campus, Classes, Students, Teachers, Fees <b>updates</b> and the people who make learning matter.</p>
+      </div>
+      <div class="panel-foot">
+        <div class="portal-access">
+          <span class="highlight">✦</span> Students
+          <span class="divider-dot">·</span> Teachers
+          <span class="divider-dot">·</span> Admin
+          <span class="highlight-end">✦</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Auth -->
+    <section class="auth-panel" aria-label="Portal sign in">
+      <div class="auth-wrap">
+        <div class="auth-top">
+          <span class="mini-brand">Portal access</span>
+        </div>
+
+        <div class="auth-heading">
+          <h2>Welcome back.</h2>
+          <p>Sign in to continue to MEI portal access for Administrator.</p>
+        </div>
+
+        <form id="loginForm" novalidate>
+          <div class="field">
+            <label for="username">Username</label>
+            <div class="input-wrap">
+              <input id="username" name="username" type="text" autocomplete="username" placeholder="your.username" required />
+              <i data-lucide="user" class="input-icon" aria-hidden="true"></i>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="input-wrap">
+              <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required />
+              <button type="button" class="password-toggle" id="togglePassword" aria-label="Show password">
+                <i data-lucide="eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="status" id="status" aria-live="polite"></div>
+          <button class="primary" type="submit" id="signIn">
+            <span id="btnText">Sign in to portal</span>
+            <span id="btnSpinner" class="spinner" style="display:none;"></span>
+          </button>
+        </form>
+
+        <div class="divider">or continue with</div>
+
+        <a href="#" class="sso" id="sso">
+          <i data-lucide="building-2"></i> Institute single sign-on
+        </a>
+
+        <p class="terms">
+          By continuing, you agree to Muhammad Education Institute's
+          <a href="#terms">acceptable use policy</a> and
+          <a href="#privacy">privacy notice</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== LOGO PREVIEW MODAL with COUNTDOWN (3 seconds) ===== -->
+  <div class="logo-preview-modal" id="logoPreviewModal" role="dialog" aria-modal="true" aria-label="Logo preview">
+    <div class="logo-preview-box">
+      <img src="logo.png" alt="Muhammad Education Institute Logo - full view" />
+      <div class="countdown-badge" id="countdownBadge">3</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <!-- Lucide icons -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.383.0/dist/umd/lucide.min.js"></script>
+  <script>
+    // ===== helpers =====
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => document.querySelectorAll(s);
+
+    // ===== toast =====
+    const toast = $('#toast');
+    function notify(text) {
+      toast.textContent = text;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    // ===== LOGO PREVIEW MODAL with COUNTDOWN (3 seconds) =====
+    const logoTrigger = $('#logoTrigger');
+    const logoPreviewModal = $('#logoPreviewModal');
+    const countdownBadge = $('#countdownBadge');
+    let logoTimeout = null;
+    let countdownInterval = null;
+    let countdownValue = 3;
+
+    function openLogoPreview() {
+      if (logoTimeout) {
+        clearTimeout(logoTimeout);
+        logoTimeout = null;
+      }
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+      }
+      countdownValue = 3;
+      countdownBadge.textContent = countdownValue;
+      logoPreviewModal.classList.add('open');
+
+      countdownInterval = setInterval(() => {
+        countdownValue -= 1;
+        if (countdownValue <= 0) {
+          clearInterval(countdownInterval);
+          countdownInterval = null;
+          closeLogoPreview();
+        } else {
+          countdownBadge.textContent = countdownValue;
+        }
+      }, 1000);
+
+      logoTimeout = setTimeout(() => {
+        if (logoPreviewModal.classList.contains('open')) {
+          closeLogoPreview();
+        }
+      }, 3500);
+    }
+
+    function closeLogoPreview() {
+      logoPreviewModal.classList.remove('open');
+      if (logoTimeout) {
+        clearTimeout(logoTimeout);
+        logoTimeout = null;
+      }
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+      }
+    }
+
+    logoTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openLogoPreview();
+    });
+    logoTrigger.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openLogoPreview();
+      }
+    });
+    logoPreviewModal.addEventListener('click', (e) => {
+      if (e.target === logoPreviewModal) {
+        closeLogoPreview();
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && logoPreviewModal.classList.contains('open')) {
+        closeLogoPreview();
+      }
+    });
+
+    // ===== password toggle =====
+    const togglePass = $('#togglePassword');
+    const passInput = $('#password');
+    togglePass.addEventListener('click', () => {
+      const showing = passInput.type === 'text';
+      passInput.type = showing ? 'password' : 'text';
+      togglePass.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+      togglePass.innerHTML = `<i data-lucide="${showing ? 'eye' : 'eye-off'}"></i>`;
+      if (window.lucide) lucide.createIcons();
+    });
+
+    // ===== demo links =====
+    $('#sso').addEventListener('click', () => { notify('Opening institute single sign-on'); });
+
+    // ===== Storage helpers =====
+    function loadFromStorage(key) {
+      const stored = localStorage.getItem(key);
+      return stored ? JSON.parse(stored) : [];
+    }
+
+    // ===== login logic =====
+    const loginForm = $('#loginForm');
+    const statusEl = $('#status');
+    const btnText = $('#btnText');
+    const btnSpinner = $('#btnSpinner');
+    let loginTimeout = null;
+
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      statusEl.className = 'status';
+      statusEl.textContent = '';
+
+      const username = $('#username').value.trim();
+      const password = $('#password').value;
+
+      if (!username || !password) {
+        statusEl.textContent = 'Please enter both username and password.';
+        return;
+      }
+
+      // Disable button and show spinner (replace text)
+      const submitBtn = this.querySelector('.primary');
+      submitBtn.disabled = true;
+      btnText.textContent = '';
+      btnSpinner.style.display = 'inline-block';
+
+      // Clear any previous timeout
+      if (loginTimeout) {
+        clearTimeout(loginTimeout);
+        loginTimeout = null;
+      }
+
+      // Simulate 3 second delay
+      loginTimeout = setTimeout(() => {
+        let isValid = false;
+        let redirectUrl = '';
+
+        // 1) Try STUDENT
+        const students = loadFromStorage('messStudents');
+        const student = students.find(s => s.regNo.toLowerCase() === username.toLowerCase());
+        if (student) {
+          if ((student.password || 'MESS') !== password) {
+            statusEl.textContent = 'Incorrect password. Please try again.';
+            resetButton(submitBtn);
+            return;
+          }
+          if (student.status === 'Inactive') {
+            statusEl.textContent = 'Your account is marked Inactive. Please contact administration.';
+            resetButton(submitBtn);
+            return;
+          }
+          localStorage.setItem('messCurrentUser', JSON.stringify({
+            regNo: student.regNo,
+            role: 'student',
+            name: student.studentName
+          }));
+          isValid = true;
+          redirectUrl = 'student/student-dashboard.html';
+        }
+
+        // 2) Try TEACHER
+        if (!isValid) {
+          const teachers = loadFromStorage('messTeachers');
+          const teacher = teachers.find(t => t.regNo.toLowerCase() === username.toLowerCase());
+          if (teacher) {
+            if ((teacher.password || 'MESS') !== password) {
+              statusEl.textContent = 'Incorrect password. Please try again.';
+              resetButton(submitBtn);
+              return;
+            }
+            if (teacher.status === 'Inactive') {
+              statusEl.textContent = 'Your account is marked Inactive. Please contact administration.';
+              resetButton(submitBtn);
+              return;
+            }
+            localStorage.setItem('messCurrentUser', JSON.stringify({
+              regNo: teacher.regNo,
+              role: 'teacher',
+              name: teacher.teacherName
+            }));
+            isValid = true;
+            redirectUrl = 'teacher/teacher-dashboard.html';
+          }
+        }
+
+        // 3) Try ADMIN
+        if (!isValid) {
+          if (username === 'MEI.ADMIN.UMAR.18747' && password === 'mei') {
+            localStorage.setItem('messCurrentUser', JSON.stringify({
+              regNo: 'ADMIN',
+              role: 'manager',
+              name: 'Administrator'
+            }));
+            isValid = true;
+            redirectUrl = 'admin/dashboard.html';
+          } else {
+            statusEl.textContent = 'No account found with these credentials. Please check and try again.';
+            resetButton(submitBtn);
+            return;
+          }
+        }
+
+        if (isValid && redirectUrl) {
+          // Reset button before redirect
+          resetButton(submitBtn);
+          window.location.href = redirectUrl;
+        }
+      }, 3000);
+    });
+
+    function resetButton(btn) {
+      btn.disabled = false;
+      btnText.textContent = 'Sign in to portal';
+      btnSpinner.style.display = 'none';
+      if (loginTimeout) {
+        clearTimeout(loginTimeout);
+        loginTimeout = null;
+      }
+    }
+
+    // Init Lucide icons
+    if (window.lucide) lucide.createIcons();
+  </script>
+</body>
+</html>

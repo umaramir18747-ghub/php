@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEI – Mark Payment</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../components.css">
+  <link rel="stylesheet" href="../responsive-components.css">
+  <style>
+    /* ============================================
+       INTERNAL CSS - Unified Design System
+       Based on: fee.css / enroll.css / view-details.css
+       Blue Theme | Full Width | Responsive
+       ============================================ */
+
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, Roboto, sans-serif;
+    }
+
+    body {
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    /* ===== APP WRAPPER / CONTAINER ===== */
+    .app-wrapper {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* ===== MAIN PANEL ===== */
+    .main-panel {
+      flex: 1;
+      padding: 40px 32px;
+      background: #f8fafc;
+      min-height: calc(100vh - 70px);
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: white;
+      padding: 24px 32px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e9eef3;
+      width: 100%;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .page-header h1 i {
+      color: #2563eb;
+      background: none;
+      -webkit-text-fill-color: #2563eb;
+    }
+
+    .page-header p {
+      color: #475569;
+      margin-top: 8px;
+      font-size: 15px;
+      border-left: 3px solid #3b82f6;
+      padding-left: 16px;
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: white;
+      padding: 32px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.07);
+      border: 1px solid #f1f5f9;
+      margin-bottom: 28px;
+    }
+
+    .card-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-title-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-title i {
+      color: #2563eb;
+      font-size: 22px;
+    }
+
+    /* ===== BADGE COUNTER ===== */
+    .badge-counter {
+      background: #eef2ff;
+      padding: 4px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e40af;
+      border-radius: 0;
+      white-space: nowrap;
+    }
+
+    /* ===== FILTERS ROW ===== */
+    .filters-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 14px 10px 40px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 0;
+      font-size: 14px;
+      color: #1e293b;
+      transition: all 0.25s;
+      background: white;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .filter-select {
+      padding: 10px 36px 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 0;
+      font-size: 14px;
+      color: #1e293b;
+      background: white;
+      cursor: pointer;
+      transition: all 0.25s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      min-width: 150px;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    /* ===== STUDENT TABLE WRAPPER ===== */
+    .student-table-wrapper {
+      overflow-x: auto;
+      overflow-y: visible;
+      -webkit-overflow-scrolling: touch;
+      width: 100%;
+      border: 1.5px solid #e2e8f0;
+      margin-bottom: 24px;
+    }
+
+    .student-table-wrapper table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
+      min-width: 100%;
+      white-space: nowrap;
+    }
+
+    /* ===== TABLE HEADERS - BLUE THEME ===== */
+    .student-table-wrapper th {
+      text-align: left;
+      padding: 16px 16px;
+      background: #2563eb;
+      font-weight: 700;
+      font-size: 12.5px;
+      color: white;
+      border-bottom: 2px solid #1d4ed8;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .student-table-wrapper th i {
+      color: white;
+      margin-right: 6px;
+    }
+
+    .student-table-wrapper td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f2f5;
+      font-size: 14px;
+      vertical-align: middle;
+      white-space: nowrap;
+      color: #1e293b;
+    }
+
+    .student-table-wrapper tr:hover {
+      background: #fafcff;
+    }
+
+    .student-table-wrapper tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ===== PILL BUTTONS ===== */
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      background: white;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .btn-pill i {
+      color: #2563eb;
+      font-size: 13px;
+    }
+
+    .btn-pill:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+
+    .btn-pill.primary {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    .btn-pill.primary i {
+      color: white;
+    }
+
+    .btn-pill.primary:hover {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
+    }
+
+    /* ===== FEE TYPE BADGE (no icon) ===== */
+    .fee-type-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #1e40af;
+      background: #eff6ff;
+      border: 1.5px solid #dbeafe;
+      border-radius: 0;
+      white-space: nowrap;
+    }
+
+    /* ===== MARK PAID BUTTON STATES ===== */
+    .btn-pill.pending {
+      background: #f59e0b;
+      color: white;
+      border-color: #f59e0b;
+    }
+
+    .btn-pill.pending i {
+      color: white;
+    }
+
+    .btn-pill.pending:hover {
+      background: #d97706;
+      border-color: #d97706;
+      box-shadow: 0 6px 14px rgba(245, 158, 11, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-pill.paid {
+      background: #16a34a;
+      color: white;
+      border-color: #16a34a;
+      pointer-events: none;
+      cursor: default;
+      opacity: 1;
+    }
+
+    .btn-pill.paid i {
+      color: white;
+    }
+
+    .btn-pill.paid:hover {
+      background: #16a34a;
+      border-color: #16a34a;
+      transform: none;
+      box-shadow: 0 6px 14px rgba(22, 163, 74, 0.3);
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      padding: 12px 26px;
+      border: none;
+      border-radius: 0;
+      font-size: 14.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+    }
+
+    .btn i {
+      color: inherit;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-primary i {
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-secondary {
+      background: #f8fafc;
+      color: #334155;
+      border: 1.5px solid #e2e8f0;
+    }
+
+    .btn-secondary i {
+      color: #2563eb;
+    }
+
+    .btn-secondary:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      transform: translateY(-2px);
+    }
+
+    /* ===== MODAL OVERLAY ===== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.open,
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-box {
+      background: white;
+      width: 95%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      background: #2563eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .modal-header h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-header h3 i {
+      color: white;
+    }
+
+    .modal-close {
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      width: 34px;
+      height: 34px;
+      font-size: 20px;
+      cursor: pointer;
+      color: white;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0;
+    }
+
+    .modal-close:hover {
+      background: #ef4444;
+      color: white;
+    }
+
+    .modal-body {
+      padding: 22px 24px;
+    }
+
+    /* ===== TOAST NOTIFICATIONS ===== */
+    .toast-msg {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1e293b;
+      color: white;
+      padding: 16px 28px;
+      border-radius: 0;
+      font-size: 14.5px;
+      font-weight: 500;
+      z-index: 9999;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideUp 0.35s ease;
+      max-width: 480px;
+    }
+
+    .toast-msg i {
+      color: #3b82f6;
+      font-size: 18px;
+    }
+
+    .toast-msg.toast-success {
+      background: #065f46;
+    }
+
+    .toast-msg.toast-success i {
+      color: #6ee7b7;
+    }
+
+    @keyframes slideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ============================================
+       RESPONSIVE BREAKPOINTS
+       ============================================ */
+
+    /* ===== TABLET / SMALL DESKTOP (1024px and below) ===== */
+    @media (max-width: 1024px) {
+      .main-panel {
+        padding: 24px 20px;
+      }
+
+      .page-header {
+        padding: 20px 24px;
+      }
+
+      .page-header h1 {
+        font-size: 24px;
+      }
+
+      .page-header p {
+        font-size: 14px;
+      }
+
+      .card {
+        padding: 24px 20px;
+      }
+
+      .card-title {
+        font-size: 17px;
+      }
+
+      .student-table-wrapper table {
+        min-width: 850px;
+        width: auto;
+      }
+
+      .student-table-wrapper th,
+      .student-table-wrapper td {
+        padding: 13px 14px;
+        font-size: 13px;
+      }
+    }
+
+    /* ===== MOBILE (768px and below) ===== */
+    @media (max-width: 768px) {
+      .main-panel {
+        padding: 20px 16px;
+      }
+
+      .page-header {
+        padding: 18px 20px;
+      }
+
+      .page-header h1 {
+        font-size: 21px;
+        gap: 10px;
+      }
+
+      .page-header p {
+        font-size: 13.5px;
+        padding-left: 12px;
+      }
+
+      .card {
+        padding: 20px 16px;
+      }
+
+      .card-title {
+        font-size: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 20px;
+      }
+
+      .card-title-left {
+        flex-wrap: wrap;
+      }
+
+      /* Filters stack */
+      .filters-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-wrap {
+        min-width: 100%;
+      }
+
+      .filter-select {
+        width: 100%;
+      }
+
+      /* Table - scrollable */
+      .student-table-wrapper table {
+        min-width: 720px;
+        width: auto;
+      }
+
+      .student-table-wrapper th {
+        font-size: 11px;
+        padding: 10px 10px;
+      }
+
+      .student-table-wrapper td {
+        padding: 10px 10px;
+        font-size: 12px;
+      }
+
+      /* Buttons stack */
+      .btn {
+        justify-content: center;
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+
+      /* Modal */
+      .modal-box {
+        width: 98%;
+        max-height: 95vh;
+      }
+
+      .modal-header {
+        padding: 16px 20px;
+      }
+
+      .modal-header h3 {
+        font-size: 16px;
+      }
+
+      .modal-body {
+        padding: 18px 20px;
+      }
+
+      .btn-pill {
+        justify-content: center;
+      }
+
+      /* Toast */
+      .toast-msg {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        padding: 14px 20px;
+        font-size: 13.5px;
+        text-align: center;
+        justify-content: center;
+        max-width: none;
+      }
+    }
+
+    /* ===== SMALL MOBILE (480px and below) ===== */
+    @media (max-width: 480px) {
+      .main-panel {
+        padding: 16px 12px;
+      }
+
+      .page-header {
+        padding: 16px 18px;
+      }
+
+      .page-header h1 {
+        font-size: 18px;
+        gap: 8px;
+      }
+
+      .page-header h1 i {
+        font-size: 17px;
+      }
+
+      .page-header p {
+        font-size: 12.5px;
+        padding-left: 10px;
+      }
+
+      .card {
+        padding: 16px 14px;
+      }
+
+      .card-title {
+        font-size: 15px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+      }
+
+      .card-title i {
+        font-size: 18px;
+      }
+
+      .badge-counter {
+        font-size: 11px;
+        padding: 3px 10px;
+      }
+
+      /* Table - smaller min-width */
+      .student-table-wrapper table {
+        min-width: 600px;
+        width: auto;
+      }
+
+      .student-table-wrapper th {
+        font-size: 10px;
+        padding: 9px 8px;
+        letter-spacing: 0;
+      }
+
+      .student-table-wrapper td {
+        padding: 9px 8px;
+        font-size: 11px;
+      }
+
+      .btn {
+        padding: 10px 16px;
+        font-size: 13px;
+        gap: 6px;
+      }
+
+      .btn-pill {
+        padding: 7px 12px;
+        font-size: 12px;
+      }
+
+      /* Modal */
+      .modal-header h3 {
+        font-size: 15px;
+      }
+
+      .modal-close {
+        width: 30px;
+        height: 30px;
+        font-size: 17px;
+      }
+
+      .toast-msg {
+        padding: 12px 16px;
+        font-size: 12.5px;
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+      }
+    }
+
+    /* ===== EXTRA SMALL (360px and below) ===== */
+    @media (max-width: 360px) {
+      .main-panel {
+        padding: 10px 8px;
+      }
+
+      .student-table-wrapper table {
+        min-width: 500px;
+        width: auto;
+      }
+
+      .student-table-wrapper th {
+        font-size: 9px;
+        padding: 8px 6px;
+      }
+
+      .student-table-wrapper td {
+        padding: 8px 6px;
+        font-size: 10px;
+      }
+
+      .btn-pill {
+        font-size: 11px;
+        padding: 6px 10px;
+      }
+
+      .modal-header h3 {
+        font-size: 14px;
+      }
+    }
+
+    /* ============================================
+       PRINT STYLES
+       ============================================ */
+    @media print {
+      .btn-actions,
+      .btn-pill,
+      .filters-row,
+      .modal-close,
+      .action-icons,
+      .student-checkbox {
+        display: none !important;
+      }
+
+      .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+
+      .page-header {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+
+      .modal-overlay {
+        display: none !important;
+      }
+
+      .student-table-wrapper th {
+        background: #2563eb !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .student-table-wrapper {
+        overflow: visible !important;
+        border: 1px solid #ddd;
+      }
+
+      .student-table-wrapper table {
+        min-width: 100% !important;
+        width: 100% !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header will be loaded here -->
+  <div id="header-placeholder"></div>
+
+  <div class="app-wrapper" id="appWrapper">
+    <!-- Sidebar will be loaded here -->
+    <div id="sidebar-placeholder"></div>
+
+    <div class="app-container">
+      <main class="main-panel">
+        <div class="page-header">
+          <h1><i class="fas fa-check-circle"></i> Mark Payment</h1>
+          <p>Review all pending unpaid fees, filter by class, fee type, or month, and mark payments as paid with a receipt number.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-left">
+              <i class="fas fa-clock" style="color:#d97706;"></i> Pending Unpaid Fees
+            </div>
+            <span class="badge-counter" id="feeCountBadge">0 Pending</span>
+          </div>
+
+          <!-- Filters Row -->
+          <div class="filters-row">
+            <div class="search-wrap">
+              <i class="fas fa-search"></i>
+              <input type="text" class="search-input" id="searchInput" placeholder="Search by student name, reg no, fee type..." oninput="applyFilters()">
+            </div>
+            <select class="filter-select" id="classFilter" onchange="applyFilters()">
+              <option value="">All Classes</option>
+            </select>
+            <select class="filter-select" id="feeTypeFilter" onchange="applyFilters()">
+              <option value="">All Fee Types</option>
+            </select>
+            <select class="filter-select" id="feeMonthFilter" onchange="applyFilters()">
+              <option value="">All Fee Months</option>
+            </select>
+          </div>
+
+          <!-- Table Wrapper -->
+          <div class="student-table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Reg No.</th>
+                  <th>Student Name</th>
+                  <th>Class</th>
+                  <th>Fee Type</th>
+                  <th>Fee Month</th>
+                  <th>Due Date</th>
+                  <th>Amount (PKR)</th>
+                  <th style="text-align:right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="feeTableBody">
+                <!-- Records populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal-box" style="max-width: 440px;">
+      <div class="modal-header" style="background:#b91c1c;">
+        <h3><i class="fas fa-exclamation-triangle"></i> Confirm Delete</h3>
+        <button class="modal-close" onclick="closeConfirmModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMessage" style="font-size:14.5px; color:#334155; margin-bottom:20px; line-height:1.5;"></p>
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+          <button type="button" class="btn btn-primary" id="confirmDeleteBtn" style="background:#dc2626;">Delete Fee Record</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../components.js"></script>
+  <script>
+    // ================= COMPONENT LOADING (HEADER & SIDEBAR) =================
+    function loadComponents() {
+      fetch('header.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('header-placeholder').innerHTML = data;
+        })
+        .catch(err => console.error('Error loading header:', err));
+
+      fetch('sidebar.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('sidebar-placeholder').innerHTML = data;
+        })
+        .catch(err => console.error('Error loading sidebar:', err));
+    }
+
+    window.addEventListener('load', function() {
+      loadComponents();
+
+      setTimeout(() => {
+        if (typeof window.initHeaderAndSidebar === 'function') {
+          window.initHeaderAndSidebar();
+        }
+      }, 400);
+
+      buildFilters();
+      applyFilters();
+    });
+
+    // ================= STORAGE HELPERS =================
+    function loadFeeRecords() {
+      try {
+        const stored = localStorage.getItem('messFeeRecords');
+        return stored ? JSON.parse(stored) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveFeeRecords(records) {
+      localStorage.setItem('messFeeRecords', JSON.stringify(records));
+    }
+
+    let pendingDeleteId = null;
+
+    function generateReceiptNumber() {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let res = "RCP-";
+      for (let i = 0; i < 7; i++) {
+        res += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return res;
+    }
+
+    function buildFilters() {
+      const records = loadFeeRecords();
+
+      const classes = [...new Set(records.map(r => r.className).filter(Boolean))].sort();
+      const classSel = document.getElementById('classFilter');
+      classSel.innerHTML = '<option value="">All Classes</option>' +
+        classes.map(c => `<option value="${c}">${c}</option>`).join('');
+
+      const feeTypes = [...new Set(records.map(r => r.feeType).filter(Boolean))].sort();
+      const feeTypeSel = document.getElementById('feeTypeFilter');
+      feeTypeSel.innerHTML = '<option value="">All Fee Types</option>' +
+        feeTypes.map(f => `<option value="${f}">${f}</option>`).join('');
+
+      const feeMonths = [...new Set(records.map(r => r.feeMonth).filter(Boolean))].sort();
+      const feeMonthSel = document.getElementById('feeMonthFilter');
+      feeMonthSel.innerHTML = '<option value="">All Fee Months</option>' +
+        feeMonths.map(m => `<option value="${m}">${m}</option>`).join('');
+    }
+
+    function applyFilters() {
+      const search = document.getElementById('searchInput').value.toLowerCase().trim();
+      const classVal = document.getElementById('classFilter').value;
+      const feeTypeVal = document.getElementById('feeTypeFilter').value;
+      const feeMonthVal = document.getElementById('feeMonthFilter').value;
+
+      let records = loadFeeRecords().filter(r => r.status === "Unpaid");
+
+      if (classVal) records = records.filter(r => r.className === classVal);
+      if (feeTypeVal) records = records.filter(r => r.feeType === feeTypeVal);
+      if (feeMonthVal) records = records.filter(r => r.feeMonth === feeMonthVal);
+      if (search) {
+        records = records.filter(r =>
+          (r.studentName && r.studentName.toLowerCase().includes(search)) ||
+          (r.regNo && r.regNo.toLowerCase().includes(search)) ||
+          (r.feeType && r.feeType.toLowerCase().includes(search))
+        );
+      }
+
+      renderTable(records);
+    }
+
+    function renderTable(records) {
+      const tbody = document.getElementById('feeTableBody');
+      document.getElementById('feeCountBadge').textContent = `${records.length} Pending`;
+
+      if (records.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align:center; padding:36px; color:#94a3b8;">
+              <i class="fas fa-check-circle" style="font-size:32px; color:#10b981; margin-bottom:8px; display:block;"></i>
+              No pending unpaid fees found matching your filters.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = records.map(r => `
+        <tr>
+          <td><strong>${r.regNo}</strong></td>
+          <td>${r.studentName}</td>
+          <td>${r.className}</td>
+          <td><span class="fee-type-badge">${r.feeType}</span></td>
+          <td>${r.feeMonth}</td>
+          <td>${r.dueDate || '—'}</td>
+          <td><strong style="color:#1e3a8a;">PKR ${(r.amount || 0).toLocaleString()}</strong></td>
+          <td style="text-align:right;">
+            <div style="display:flex; justify-content:flex-end; gap:8px;">
+              <button class="btn-pill pending" id="payBtn-${r.id}" onclick="markAsPaid('${r.id}')" title="Collect fee & mark as Paid">
+                <i class="fas fa-clock"></i> Mark Paid
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function markAsPaid(recordId) {
+      const records = loadFeeRecords();
+      const idx = records.findIndex(r => r.id === recordId);
+
+      if (idx === -1) {
+        showToast('⚠️ Fee record not found');
+        return;
+      }
+
+      // Visual feedback: switch button to "Paid" (blue) state
+      const btn = document.getElementById(`payBtn-${recordId}`);
+      if (btn) {
+        btn.classList.remove('pending');
+        btn.classList.add('paid');
+        btn.innerHTML = `<i class="fas fa-check-circle"></i> Paid`;
+        btn.disabled = true;
+      }
+
+      const receipt = generateReceiptNumber();
+      const nowStr = new Date().toLocaleString('en-PK', { hour12: true });
+
+      records[idx].status = "Paid";
+      records[idx].paidDateTime = nowStr;
+      records[idx].receiptNo = receipt;
+
+      saveFeeRecords(records);
+      showToast(`✅ Payment recorded for ${records[idx].studentName}! Receipt: ${receipt}`);
+
+      // Small delay so user sees the blue "Paid" state, then refresh table
+      setTimeout(() => {
+        buildFilters();
+        applyFilters();
+      }, 700);
+    }
+
+    function promptDelete(recordId) {
+      const records = loadFeeRecords();
+      const rec = records.find(r => r.id === recordId);
+      if (!rec) return;
+
+      pendingDeleteId = recordId;
+      document.getElementById('confirmMessage').innerHTML = `
+        Are you sure you want to delete the pending fee record for <strong>${rec.studentName}</strong> (${rec.regNo})?<br><br>
+        <strong>${rec.feeType} (${rec.feeMonth})</strong> — PKR ${(rec.amount || 0).toLocaleString()}
+      `;
+
+      document.getElementById('confirmDeleteBtn').onclick = () => {
+        executeDelete(recordId);
+      };
+      document.getElementById('confirmModal').classList.add('open');
+    }
+
+    function executeDelete(recordId) {
+      let records = loadFeeRecords();
+      records = records.filter(r => r.id !== recordId);
+      saveFeeRecords(records);
+      closeConfirmModal();
+      showToast('🗑️ Fee record deleted successfully');
+      buildFilters();
+      applyFilters();
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirmModal').classList.remove('open');
+      pendingDeleteId = null;
+    }
+  </script>
+</body>
+</html>

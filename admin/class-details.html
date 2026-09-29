@@ -1,0 +1,1938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>MEI – Class Details</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" type="image/png" href="../logo2.png">
+  <link rel="stylesheet" href="../components.css">
+  <link rel="stylesheet" href="../responsive-components.css">
+  <style>
+    /* ============================================
+       INTERNAL CSS - Unified Design System
+       Based on: admission-details.css / enroll.css / view-details.css
+       Blue Theme | Full Width | Responsive
+       ============================================ */
+
+    /* ===== RESET & GLOBAL ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    }
+
+    body {
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    /* ===== APP WRAPPER / CONTAINER ===== */
+    .app-wrapper {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* ===== MAIN PANEL - FULL WIDTH ===== */
+    .main-panel {
+      flex: 1;
+      padding: 32px;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      background: #f8fafc;
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: white;
+      padding: 24px 32px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e9eef3;
+      width: 100%;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .page-header h1 i {
+      color: #2563eb;
+      background: none;
+      -webkit-text-fill-color: #2563eb;
+    }
+
+    .page-header p {
+      color: #475569;
+      margin-top: 8px;
+      font-size: 15px;
+      border-left: 3px solid #3b82f6;
+      padding-left: 16px;
+    }
+
+    /* ===== DATA CARD - FULL WIDTH ===== */
+    .data-card {
+      background: white;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+      border: 1px solid #edf2f7;
+      overflow: hidden;
+      width: 100%;
+      margin-bottom: 28px;
+    }
+
+    .card-header {
+      padding: 20px 28px;
+      background: #fefefe;
+      border-bottom: 1px solid #eef2f8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .card-header h2 {
+      font-size: 19px;
+      font-weight: 700;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-header h2 i {
+      color: #2563eb;
+      font-size: 20px;
+    }
+
+    /* ===== BADGE COUNT ===== */
+    .badge-count {
+      background: #eef2ff;
+      padding: 4px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e40af;
+      border-radius: 0;
+      white-space: nowrap;
+    }
+
+    /* ===== SEARCH & FILTER WRAPPER ===== */
+    .search-filter-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex: 1;
+      justify-content: flex-end;
+    }
+
+    .search-wrapper {
+      position: relative;
+      min-width: 260px;
+      flex: 1;
+      max-width: 400px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 40px 10px 40px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 0;
+      font-size: 14px;
+      color: #1e293b;
+      background: white;
+      transition: all 0.25s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .search-clear-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+    }
+
+    .search-clear-btn:hover {
+      color: #2563eb;
+    }
+
+    /* ===== STATUS FILTER DROPDOWN ===== */
+    .filter-wrapper {
+      position: relative;
+      min-width: 160px;
+      flex-shrink: 0;
+    }
+
+    .filter-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 13px;
+      pointer-events: none;
+    }
+
+    .filter-select {
+      width: 100%;
+      padding: 10px 32px 10px 34px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 0;
+      font-size: 14px;
+      color: #1e293b;
+      background: white;
+      cursor: pointer;
+      transition: all 0.25s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    /* ===== TABLE WRAPPER - AUTO SCROLL ===== */
+    .table-wrapper {
+      overflow-x: auto;
+      overflow-y: visible;
+      padding: 0;
+      -webkit-overflow-scrolling: touch;
+      width: 100%;
+      position: relative;
+      border: 1.5px solid #e2e8f0;
+    }
+
+    /* ===== TABLE - AUTO WIDTH ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
+      min-width: 100%;
+      white-space: nowrap;
+    }
+
+    /* ===== TABLE HEADERS - BLUE THEME ===== */
+    th {
+      text-align: left;
+      padding: 16px 16px;
+      background: #2563eb;
+      font-weight: 700;
+      font-size: 12.5px;
+      color: white;
+      border-bottom: 2px solid #1d4ed8;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    th i {
+      color: white;
+      margin-right: 6px;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f2f5;
+      font-size: 14px;
+      vertical-align: middle;
+      white-space: nowrap;
+      color: #1e293b;
+    }
+
+    td:last-child {
+      white-space: nowrap;
+    }
+
+    tr:hover {
+      background: #fafcff;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ===== STATUS SELECT DROPDOWN ===== */
+    .status-select {
+      padding: 6px 28px 6px 12px;
+      font-size: 12.5px;
+      font-weight: 600;
+      border: 1.5px solid #e2e8f0;
+      background: white;
+      color: #1e293b;
+      cursor: pointer;
+      border-radius: 0;
+      width: 100%;
+      min-width: 92px;
+      max-width: 120px;
+      white-space: nowrap;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      transition: all 0.2s;
+    }
+
+    .status-select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .status-select.active-select {
+      background-color: #dbeafe;
+      color: #1e40af;
+      border-color: #bfdbfe;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%231e40af' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    }
+
+    .status-select.graduated-select {
+      background-color: #d1fae5;
+      color: #065f46;
+      border-color: #a7f3d0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23065f46' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    }
+
+    /* ===== ACTION ICONS ===== */
+    .action-icons {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+    }
+
+    .action-icons i {
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      cursor: pointer;
+      border: 1.5px solid #e2e8f0;
+      background: #f8fafc;
+      color: #475569;
+      border-radius: 0;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .action-icons i:hover {
+      transform: translateY(-1px);
+    }
+
+    .action-icons .view-icon:hover {
+      background: #dbeafe;
+      color: #1d4ed8;
+      border-color: #93c5fd;
+    }
+
+    .action-icons .promote-icon:hover {
+      background: #d1fae5;
+      color: #065f46;
+      border-color: #a7f3d0;
+    }
+
+    .action-icons .delete-icon:hover {
+      background: #fee2e2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+
+    /* ===== STUDENT COUNT BADGE ===== */
+    .student-count-badge {
+      background: #eef2ff;
+      padding: 4px 12px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #1e40af;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      border-radius: 0;
+    }
+
+    .student-count-badge i {
+      color: #2563eb;
+      font-size: 12px;
+    }
+
+    /* ===== NO RESULTS MESSAGE ===== */
+    #noResultsMessage {
+      text-align: center;
+      padding: 40px 20px;
+      color: #64748b;
+    }
+
+    #noResultsMessage i {
+      font-size: 32px;
+      display: block;
+      margin-bottom: 12px;
+      color: #94a3b8;
+    }
+
+    #noResultsMessage p:first-of-type {
+      font-size: 16px;
+      font-weight: 500;
+      color: #1e293b;
+    }
+
+    #noResultsMessage p:last-of-type {
+      font-size: 14px;
+    }
+
+    /* ============================================
+       PANEL / MODAL STYLES
+       ============================================ */
+
+    /* ===== MODAL OVERLAY (Class Details) ===== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .class-modal-container {
+      background: white;
+      width: 95%;
+      max-width: 1000px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== MODAL HEADER ===== */
+    .modal-header-custom {
+      padding: 20px 24px;
+      background: #2563eb;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    .modal-header-custom h2 {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+    }
+
+    .modal-header-custom h2 i {
+      color: white;
+    }
+
+    .close-modal-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      width: 36px;
+      height: 36px;
+      font-size: 16px;
+      cursor: pointer;
+      color: white;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border-radius: 0;
+    }
+
+    .close-modal-btn:hover {
+      background: #ef4444;
+      color: white;
+    }
+
+    /* ===== CLASS MODAL SPECIFIC ===== */
+    .info-summary-grid {
+      background: #f8fafc;
+      padding: 20px 28px;
+      border-bottom: 1px solid #ecf3fa;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 24px;
+    }
+
+    .info-summary-item {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      font-size: 13.5px;
+      padding: 8px 0;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .info-summary-item strong {
+      min-width: 110px;
+      color: #64748b;
+      font-weight: 600;
+      font-size: 12.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .info-summary-item strong i {
+      color: #2563eb;
+      font-size: 12px;
+    }
+
+    /* ===== STATUS BADGES ===== */
+    .status-badge {
+      display: inline-block;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      min-width: 85px;
+      white-space: nowrap;
+      border-radius: 0;
+    }
+
+    .status-active {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
+    .status-graduated {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    /* ===== STUDENT GRID IN CLASS MODAL ===== */
+    .student-grid-class {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+      padding: 20px 28px 28px;
+    }
+
+    .student-card-class {
+      background: white;
+      border: 1.5px solid #e2e8f0;
+      padding: 16px 10px 14px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .student-card-class:hover {
+      border-color: #93c5fd;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .photo-frame-class {
+      width: 100px;
+      height: 125px;
+      margin: 0 auto 12px;
+      background: #eef2ff;
+      border: 2px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .student-img-class {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .placeholder-icon-class {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eef2ff;
+      color: #93c5fd;
+      font-size: 36px;
+    }
+
+    .student-name-class {
+      font-weight: 700;
+      color: #1e293b;
+      margin: 6px 0 4px;
+      font-size: 13px;
+      word-break: break-word;
+    }
+
+    .student-id-class {
+      color: #2563eb;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'Courier New', monospace;
+      background: white;
+      padding: 2px 10px;
+      display: inline-block;
+    }
+
+    .modal-footer-custom {
+      padding: 16px 24px;
+      background: #f8fafc;
+      border-top: 1px solid #eef2f8;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .modal-footer-custom button {
+      background: #f1f5f9;
+      border: 1.5px solid #cbd5e1;
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-footer-custom button i {
+      color: #64748b;
+    }
+
+    .modal-footer-custom button:hover {
+      background: #ef4444;
+      color: white;
+      border-color: #ef4444;
+    }
+
+    .modal-footer-custom button:hover i {
+      color: white;
+    }
+
+    /* ===== TOAST NOTIFICATIONS ===== */
+    .toast-msg {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1e293b;
+      color: white;
+      padding: 16px 28px;
+      font-size: 15px;
+      font-weight: 500;
+      z-index: 2200;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideUp 0.35s ease;
+      max-width: 480px;
+      border-radius: 0;
+    }
+
+    .toast-msg i {
+      color: #3b82f6;
+      font-size: 20px;
+    }
+
+    @keyframes slideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ============================================
+       DELETE CONFIRMATION MODAL — GITHUB STYLE
+       ============================================ */
+    .delete-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(4px);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    .delete-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .delete-modal-container {
+      background: white;
+      width: 95%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      border-radius: 0;
+      transform: scale(0.96);
+      transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      padding: 0;
+    }
+
+    .delete-modal-overlay.active .delete-modal-container {
+      transform: scale(1);
+    }
+
+    .delete-modal-header {
+      padding: 20px 24px 8px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: none;
+    }
+
+    .delete-modal-header .warning-icon {
+      background: #fee2e2;
+      color: #dc2626;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .delete-modal-header h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .delete-modal-header h2 small {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .delete-modal-body {
+      padding: 8px 24px 20px 24px;
+    }
+
+    .delete-modal-body p {
+      color: #334155;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .delete-modal-body .warning-box {
+      background: #fef2f2;
+      border-left: 4px solid #dc2626;
+      padding: 14px 18px;
+      border-radius: 0;
+      margin-bottom: 22px;
+      font-size: 14px;
+      color: #7f1d1d;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .delete-modal-body .warning-box i {
+      color: #dc2626;
+      font-size: 18px;
+      margin-top: 2px;
+    }
+
+    .delete-modal-body .warning-box strong {
+      color: #991b1b;
+    }
+
+    .delete-modal-body label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+
+    .delete-modal-body label .req {
+      color: #dc2626;
+      margin-left: 4px;
+    }
+
+    .delete-modal-body .input-hint {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 6px;
+    }
+
+    .delete-modal-body .input-hint code {
+      background: #f1f5f9;
+      padding: 2px 8px;
+      border-radius: 0;
+      font-weight: 600;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
+      font-size: 13px;
+    }
+
+    .delete-modal-body input[type="text"] {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 15px;
+      border: 2px solid #e2e8f0;
+      border-radius: 0;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: inherit;
+      background: #fafcff;
+      color: #1e293b;
+    }
+
+    .delete-modal-body input[type="text"]:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      background: white;
+    }
+
+    .delete-modal-body input[type="text"].invalid {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+    }
+
+    .delete-modal-footer {
+      padding: 16px 24px 24px 24px;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      border-top: 1px solid #eef2f8;
+      margin-top: 8px;
+    }
+
+    .delete-modal-footer button {
+      padding: 10px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 0;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .delete-modal-footer .btn-cancel {
+      background: #f1f5f9;
+      color: #334155;
+      border-color: #cbd5e1;
+    }
+
+    .delete-modal-footer .btn-cancel:hover {
+      background: #e2e8f0;
+    }
+
+    .delete-modal-footer .btn-delete {
+      background: #dc2626;
+      color: white;
+      border-color: #dc2626;
+    }
+
+    .delete-modal-footer .btn-delete:hover:not(:disabled) {
+      background: #b91c1c;
+      border-color: #b91c1c;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(220, 38, 38, 0.3);
+    }
+
+    .delete-modal-footer .btn-delete:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: #dc2626;
+      border-color: #dc2626;
+    }
+
+    .delete-modal-footer .btn-delete i {
+      font-size: 14px;
+    }
+
+    /* ============================================
+       FULLY RESPONSIVE BREAKPOINTS
+       ============================================ */
+
+    /* ===== TABLET (768px - 1024px) ===== */
+    @media (max-width: 1024px) {
+      .main-panel {
+        padding: 24px 20px;
+      }
+
+      .page-header {
+        padding: 20px 24px;
+      }
+
+      .page-header h1 {
+        font-size: 24px;
+      }
+
+      .page-header p {
+        font-size: 14px;
+      }
+
+      .card-header {
+        padding: 16px 20px;
+      }
+
+      .card-header h2 {
+        font-size: 17px;
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      table {
+        min-width: 850px;
+        width: auto;
+      }
+
+      th,
+      td {
+        padding: 13px 14px;
+        font-size: 13px;
+      }
+    }
+
+    /* ===== MOBILE (768px and below) ===== */
+    @media (max-width: 768px) {
+      .main-panel {
+        padding: 20px 16px;
+      }
+
+      .page-header {
+        padding: 18px 20px;
+      }
+
+      .page-header h1 {
+        font-size: 21px;
+        gap: 10px;
+      }
+
+      .page-header p {
+        font-size: 13.5px;
+        padding-left: 12px;
+        margin-top: 6px;
+      }
+
+      .card-header {
+        padding: 14px 16px;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .card-header h2 {
+        font-size: 16px;
+        flex-wrap: wrap;
+      }
+
+      .badge-count {
+        font-size: 12px;
+        padding: 3px 10px;
+      }
+
+      /* Search & filter stack */
+      .search-filter-row {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .search-wrapper {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+      }
+
+      .filter-wrapper {
+        width: 100%;
+        min-width: 0;
+      }
+
+      /* Table - Scrollable */
+      .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      table {
+        min-width: 720px;
+        width: auto;
+      }
+
+      th {
+        font-size: 11px;
+        padding: 10px 10px;
+        white-space: nowrap;
+      }
+
+      td {
+        padding: 10px 10px;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      /* Status select */
+      .status-select {
+        font-size: 11px;
+        padding: 4px 24px 4px 8px;
+        min-width: 75px;
+        background-position: right 6px center;
+      }
+
+      /* Action icons */
+      .action-icons {
+        gap: 6px;
+      }
+
+      .action-icons i {
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+      }
+
+      /* ===== PANELS - FULL WIDTH ===== */
+      .class-modal-container {
+        width: 96%;
+        max-height: 94vh;
+      }
+
+      .modal-header-custom {
+        padding: 16px 20px;
+      }
+
+      .modal-header-custom h2 {
+        font-size: 16px;
+      }
+
+      .close-modal-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 14px;
+      }
+
+      /* Class modal */
+      .info-summary-grid {
+        grid-template-columns: 1fr;
+        padding: 16px 20px;
+        gap: 0;
+      }
+
+      .info-summary-item {
+        padding: 6px 0;
+        font-size: 12.5px;
+      }
+
+      .info-summary-item strong {
+        min-width: 100px;
+        font-size: 11.5px;
+      }
+
+      .student-grid-class {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        padding: 16px 20px;
+        gap: 12px;
+      }
+
+      .photo-frame-class {
+        width: 80px;
+        height: 100px;
+      }
+
+      .student-card-class {
+        padding: 12px 8px 10px;
+      }
+
+      .student-name-class {
+        font-size: 12px;
+      }
+
+      .student-id-class {
+        font-size: 10px;
+      }
+
+      .modal-footer-custom {
+        padding: 14px 20px;
+      }
+
+      /* Toast */
+      .toast-msg {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        padding: 14px 20px;
+        font-size: 14px;
+        justify-content: center;
+        text-align: center;
+      }
+    }
+
+    /* ===== SMALL MOBILE (480px and below) ===== */
+    @media (max-width: 480px) {
+      .main-panel {
+        padding: 16px 12px;
+      }
+
+      .page-header {
+        padding: 14px 16px;
+      }
+
+      .page-header h1 {
+        font-size: 18px;
+        gap: 8px;
+      }
+
+      .page-header h1 i {
+        font-size: 17px;
+      }
+
+      .page-header p {
+        font-size: 12.5px;
+        padding-left: 10px;
+      }
+
+      .card-header {
+        padding: 12px 14px;
+      }
+
+      .card-header h2 {
+        font-size: 14px;
+        gap: 8px;
+      }
+
+      .badge-count {
+        font-size: 11px;
+        padding: 3px 8px;
+      }
+
+      table {
+        min-width: 600px;
+        width: auto;
+      }
+
+      th {
+        font-size: 10px;
+        padding: 9px 8px;
+        letter-spacing: 0;
+      }
+
+      td {
+        padding: 9px 8px;
+        font-size: 11px;
+      }
+
+      .status-select {
+        font-size: 10px;
+        padding: 3px 20px 3px 6px;
+        min-width: 65px;
+        background-position: right 4px center;
+      }
+
+      .action-icons {
+        gap: 4px;
+      }
+
+      .action-icons i {
+        width: 26px;
+        height: 26px;
+        font-size: 10px;
+      }
+
+      /* Panels */
+      .modal-header-custom {
+        padding: 14px 16px;
+      }
+
+      .modal-header-custom h2 {
+        font-size: 14px;
+        gap: 8px;
+      }
+
+      .close-modal-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+      }
+
+      .info-summary-grid {
+        padding: 12px 16px;
+      }
+
+      .info-summary-item {
+        font-size: 12px;
+      }
+
+      .info-summary-item strong {
+        min-width: 85px;
+        font-size: 11px;
+      }
+
+      .student-grid-class {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        padding: 12px 16px;
+        gap: 10px;
+      }
+
+      .photo-frame-class {
+        width: 70px;
+        height: 88px;
+      }
+
+      .student-card-class {
+        padding: 10px 6px 8px;
+      }
+
+      .student-name-class {
+        font-size: 11.5px;
+      }
+
+      .student-id-class {
+        font-size: 9.5px;
+      }
+
+      .modal-footer-custom {
+        padding: 12px 16px;
+      }
+
+      .modal-footer-custom button {
+        padding: 6px 14px;
+        font-size: 12px;
+      }
+
+      .toast-msg {
+        padding: 12px 16px;
+        font-size: 13px;
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+      }
+
+      /* Delete modal */
+      .delete-modal-container {
+        width: 98%;
+        max-width: 100%;
+      }
+
+      .delete-modal-header {
+        padding: 16px 18px 6px 18px;
+      }
+
+      .delete-modal-header h2 {
+        font-size: 17px;
+      }
+
+      .delete-modal-header .warning-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+      }
+
+      .delete-modal-body {
+        padding: 6px 18px 16px 18px;
+      }
+
+      .delete-modal-body p {
+        font-size: 13px;
+      }
+
+      .delete-modal-body .warning-box {
+        padding: 12px 14px;
+        font-size: 13px;
+      }
+
+      .delete-modal-footer {
+        padding: 14px 18px 18px 18px;
+        flex-direction: column-reverse;
+      }
+
+      .delete-modal-footer button {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 18px;
+      }
+    }
+
+    /* ===== EXTRA SMALL (360px and below) ===== */
+    @media (max-width: 360px) {
+      .main-panel {
+        padding: 10px 8px;
+      }
+
+      table {
+        min-width: 500px;
+        width: auto;
+      }
+
+      th {
+        font-size: 9px;
+        padding: 8px 6px;
+      }
+
+      td {
+        padding: 8px 6px;
+        font-size: 10px;
+      }
+
+      .status-select {
+        font-size: 9px;
+        padding: 2px 18px 2px 4px;
+        min-width: 55px;
+      }
+
+      .action-icons i {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+      }
+
+      .student-grid-class {
+        grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+      }
+
+      .photo-frame-class {
+        width: 62px;
+        height: 78px;
+      }
+
+      .modal-header-custom h2 {
+        font-size: 13px;
+      }
+    }
+
+    /* ============================================
+       PRINT STYLES
+       ============================================ */
+    @media print {
+      .btn-actions,
+      .photo-frame,
+      .action-icons,
+      .status-select,
+      .close-modal-btn,
+      .search-filter-row,
+      .modal-overlay,
+      .delete-modal-overlay,
+      .toast-msg {
+        display: none !important;
+      }
+
+      .data-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+
+      .page-header {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+
+      th {
+        background: #2563eb !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .table-wrapper {
+        overflow: visible !important;
+      }
+
+      table {
+        min-width: 100% !important;
+        width: 100% !important;
+      }
+    }
+  </style>
+</head>
+<body>
+    <!-- Header will be loaded here -->
+  <div id="header-placeholder"></div>
+
+  <div class="app-wrapper" id="appWrapper">
+    
+    <!-- Sidebar will be loaded here -->
+    <div id="sidebar-placeholder"></div>
+
+    <!-- Main Content -->
+<div class="app-container">
+  <main class="main-panel">
+    <div class="page-header">
+      <h1><i class="fas fa-chalkboard"></i> Class Records</h1>
+      <p>View every class in the session, search and filter by status, and manage students and promotions from one place.</p>
+    </div>
+    <div class="data-card">
+      <div class="card-header">
+        <h2><i class="fas fa-table-list"></i> All Classes <span class="badge-count" id="classCountBadge">0</span></h2>
+        <div class="search-filter-row">
+          <div class="search-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="classSearchInput" placeholder="Search by class name or ID..." class="search-input">
+            <button class="search-clear-btn" id="clearSearchBtn" style="display: none;"><i class="fas fa-times-circle"></i></button>
+          </div>
+          <div class="filter-wrapper">
+            <i class="fas fa-filter filter-icon"></i>
+            <select id="statusFilter" class="filter-select">
+              <option value="Active" selected>Active</option>
+              <option value="Graduated">Graduated</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Class Name</th>
+              <th>Class ID</th>
+              <th>Session</th>
+              <th>Grade</th>
+              <th>Section</th>
+              <th>Students</th>
+              <th>Status</th>
+              <th style="text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="classTableBody"></tbody>
+        </table>
+      </div>
+      <div id="noResultsMessage" style="display: none; text-align: center; padding: 40px 20px; color: #64748b;">
+        <i class="fas fa-search" style="font-size: 32px; display: block; margin-bottom: 12px; color: #94a3b8;"></i>
+        <p style="font-size: 16px; font-weight: 500; color: #1e293b;">No classes found</p>
+        <p style="font-size: 14px;">Try adjusting your search terms or filter</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL overlay for class detail view -->
+<div id="classModalOverlay" class="modal-overlay">
+  <div class="class-modal-container">
+    <div class="modal-header-custom">
+      <h2 id="modalClassTitle"><i class="fas fa-id-card"></i> Class Profile</h2>
+      <button class="close-modal-btn" id="closeModalBtn"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="classModalDynamicContent"></div>
+    <div class="modal-footer-custom">
+      <button id="modalFooterCloseBtn" style="background:#f1f5f9; border:1px solid #cbd5e1; padding: 8px 20px; font-weight:600; cursor:pointer;"><i class="fas fa-times"></i> Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECURE DELETE MODAL (GitHub-style) ===== -->
+<div id="deleteClassModalOverlay" class="delete-modal-overlay">
+  <div class="delete-modal-container">
+    <div class="delete-modal-header">
+      <div class="warning-icon"><i class="fas fa-exclamation-triangle"></i></div>
+      <h2>Delete this class? <small>This action cannot be undone.</small></h2>
+    </div>
+    <div class="delete-modal-body">
+      <p>This will permanently delete the class <strong id="deleteClassDisplayName">—</strong> and remove all associated student records. Please type the class ID to confirm.</p>
+      <div class="warning-box">
+        <i class="fas fa-skull-crossbones"></i>
+        <div>
+          <strong>Warning:</strong> All students enrolled in this class will be <strong>permanently removed</strong> from the system. This action cannot be undone.
+        </div>
+      </div>
+      <label>Class ID <span class="req">*</span></label>
+      <input type="text" id="deleteClassConfirmInput" placeholder="Type class ID here..." autocomplete="off" spellcheck="false">
+      <div class="input-hint">Type <code id="deleteClassExpectedId">—</code> to confirm.</div>
+    </div>
+    <div class="delete-modal-footer">
+      <button class="btn-cancel" id="cancelDeleteBtn"><i class="fas fa-times"></i> Cancel</button>
+      <button class="btn-delete" id="confirmDeleteBtn" disabled><i class="fas fa-trash-alt"></i> Delete Class</button>
+    </div>
+  </div>
+</div>
+
+<script src="../components.js"></script>
+<script>
+    function loadComponents() {
+      fetch('header.html')
+        .then(response => response.text())
+        .then(data => document.getElementById('header-placeholder').innerHTML = data)
+        .catch(err => console.error('Error loading header:', err));
+
+      fetch('sidebar.html')
+        .then(response => response.text())
+        .then(data => document.getElementById('sidebar-placeholder').innerHTML = data)
+        .catch(err => console.error('Error loading sidebar:', err));
+    }
+
+    window.onload = function() {
+      loadComponents();
+      setTimeout(() => {
+        if (typeof window.initHeaderAndSidebar === 'function') {
+          window.initHeaderAndSidebar();
+        }
+      }, 400);
+    };
+
+  // ===== Storage Helpers =====
+  function loadClassesFromStorage() {
+    const stored = localStorage.getItem('messClasses');
+    return stored ? JSON.parse(stored) : [];
+  }
+  function saveClassesToStorage(data) {
+    localStorage.setItem('messClasses', JSON.stringify(data));
+  }
+  function loadStudentsFromStorage() {
+    const stored = localStorage.getItem('messStudents');
+    return stored ? JSON.parse(stored) : [];
+  }
+  function saveStudentsToStorage(data) {
+    localStorage.setItem('messStudents', JSON.stringify(data));
+  }
+
+  function buildClassesViewModel() {
+    const rawClasses = loadClassesFromStorage();
+    const allStudents = loadStudentsFromStorage();
+    return rawClasses.map(c => {
+      const studentsInClass = allStudents
+        .filter(s => s.classId === c.id)
+        .map(s => ({
+          photo: s.photoUrl || null,
+          name: s.studentName,
+          id: s.regNo,
+          fatherName: s.fatherName,
+          phone: s.phone || s.phoneNumber || ''
+        }));
+      return { ...c, students: studentsInClass };
+    });
+  }
+
+  let classes = buildClassesViewModel();
+  let filteredClasses = [...classes];
+
+  function showToast(msg) {
+    let t = document.createElement('div');
+    t.className = 'toast-msg';
+    t.innerHTML = `<i class="fas fa-info-circle"></i> ${msg}`;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2200);
+  }
+
+  function updateClassCount() {
+    document.getElementById('classCountBadge').innerText = filteredClasses.length;
+  }
+
+  function renderClassTable(dataToRender = filteredClasses) {
+    const tbody = document.getElementById('classTableBody');
+    const noResults = document.getElementById('noResultsMessage');
+    if (!tbody) return;
+    
+    if (dataToRender.length === 0) {
+      tbody.innerHTML = '';
+      noResults.style.display = 'block';
+      document.getElementById('classCountBadge').innerText = '0';
+      return;
+    }
+    
+    noResults.style.display = 'none';
+    
+    tbody.innerHTML = dataToRender.map(c => {
+      const studentCount = c.students?.length || 0;
+      const statusClass = c.status === 'Active' ? 'active-select' : 'graduated-select';
+      return `
+        <tr>
+          <td><strong>${escapeHtml(c.name)}</strong></td>
+          <td>${escapeHtml(c.id)}</td>
+          <td>${escapeHtml(c.session)}</td>
+          <td>${escapeHtml(c.grade)}</td>
+          <td>${escapeHtml(c.section)}</td>
+          <td><span class="student-count-badge"><i class="fas fa-user-friends"></i> ${studentCount} ${studentCount === 1 ? 'Student' : 'Students'}</span></td>
+          <td>
+            <select class="status-select ${statusClass}" data-classid="${c.id}" onchange="updateClassStatus('${c.id}', this.value)">
+              <option value="Active" ${c.status === 'Active' ? 'selected' : ''}>Active</option>
+              <option value="Graduated" ${c.status === 'Graduated' ? 'selected' : ''}>Graduated</option>
+            </select>
+          </td>
+          <td style="text-align: right">
+            <div class="action-icons">
+              <i class="fas fa-eye view-icon" data-classid="${c.id}" title="View Details"></i>
+              <i class="fas fa-arrow-up promote-icon" data-classid="${c.id}" title="Promote Class"></i>
+              <i class="fas fa-trash-alt delete-icon" data-classid="${c.id}" title="Delete Class"></i>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    document.querySelectorAll('.view-icon').forEach(icon => {
+      icon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openClassDetailPanel(icon.dataset.classid);
+      });
+    });
+    document.querySelectorAll('.promote-icon').forEach(icon => {
+      icon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        window.location.href = `make-class.html?edit=${encodeURIComponent(icon.dataset.classid)}`;
+      });
+    });
+    document.querySelectorAll('.delete-icon').forEach(icon => {
+      icon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // NEW: Open secure delete modal instead of direct confirm
+        openDeleteConfirmationModal(icon.dataset.classid);
+      });
+    });
+    
+    updateClassCount();
+  }
+
+  function filterClasses(searchTerm) {
+    const statusFilter = document.getElementById('statusFilter');
+    const selectedStatus = statusFilter ? statusFilter.value : 'Active';
+    const term = searchTerm.toLowerCase().trim();
+    const clearBtn = document.getElementById('clearSearchBtn');
+    
+    // First filter by status
+    let statusFiltered = classes.filter(c => c.status === selectedStatus);
+    
+    if (!term) {
+      filteredClasses = statusFiltered;
+      clearBtn.style.display = 'none';
+    } else {
+      filteredClasses = statusFiltered.filter(c => 
+        c.name.toLowerCase().includes(term) || 
+        c.id.toLowerCase().includes(term)
+      );
+      clearBtn.style.display = 'block';
+    }
+    
+    renderClassTable(filteredClasses);
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('classSearchInput');
+    const clearBtn = document.getElementById('clearSearchBtn');
+    const statusFilter = document.getElementById('statusFilter');
+    
+    if (searchInput) {
+      searchInput.addEventListener('input', function() {
+        filterClasses(this.value);
+      });
+      
+      searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          this.value = '';
+          filterClasses('');
+          this.blur();
+        }
+      });
+    }
+    
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function() {
+        if (searchInput) {
+          searchInput.value = '';
+          filterClasses('');
+          searchInput.focus();
+        }
+      });
+    }
+
+    if (statusFilter) {
+      statusFilter.addEventListener('change', function() {
+        filterClasses(searchInput ? searchInput.value : '');
+      });
+    }
+
+    // Apply initial status filter (default: Active)
+    filterClasses('');
+  });
+
+  // ===== Update class status (Active <-> Graduated) =====
+  window.updateClassStatus = (classId, newStatus) => {
+    const cls = classes.find(c => c.id === classId);
+    if (!cls) return;
+
+    cls.status = newStatus;
+    persistClasses();
+
+    const searchInput = document.getElementById('classSearchInput');
+    filterClasses(searchInput ? searchInput.value : '');
+
+    if (newStatus === 'Graduated') {
+      showToast(`🎓 Class marked Graduated — student statuses will show "Graduated"`);
+    } else {
+      showToast(`✅ Class status updated to ${newStatus}`);
+    }
+  };
+
+  function persistClasses() {
+    const stripped = classes.map(({ students, ...rest }) => rest);
+    saveClassesToStorage(stripped);
+  }
+
+  // ===== SECURE DELETE MODAL LOGIC (GitHub-style) =====
+  let pendingDeleteClassId = null;
+
+  function openDeleteConfirmationModal(classId) {
+    const cls = classes.find(c => c.id === classId);
+    if (!cls) return;
+
+    pendingDeleteClassId = classId;
+
+    // Populate modal
+    document.getElementById('deleteClassDisplayName').textContent = `${escapeHtml(cls.name)} (${escapeHtml(cls.id)})`;
+    document.getElementById('deleteClassExpectedId').textContent = escapeHtml(cls.id);
+    
+    const input = document.getElementById('deleteClassConfirmInput');
+    input.value = '';
+    input.classList.remove('invalid');
+    input.placeholder = `Type "${cls.id}" to confirm...`;
+    
+    // Reset button state
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    confirmBtn.disabled = true;
+
+    // Show overlay
+    document.getElementById('deleteClassModalOverlay').classList.add('active');
+
+    // Focus input
+    setTimeout(() => input.focus(), 150);
+  }
+
+  function closeDeleteConfirmationModal() {
+    document.getElementById('deleteClassModalOverlay').classList.remove('active');
+    pendingDeleteClassId = null;
+    document.getElementById('deleteClassConfirmInput').classList.remove('invalid');
+  }
+
+  // Input validation
+  document.getElementById('deleteClassConfirmInput').addEventListener('input', function() {
+    const expectedId = document.getElementById('deleteClassExpectedId').textContent;
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    
+    if (this.value.trim() === expectedId) {
+      confirmBtn.disabled = false;
+      this.classList.remove('invalid');
+    } else {
+      confirmBtn.disabled = true;
+      if (this.value.trim().length > 0) {
+        this.classList.add('invalid');
+      } else {
+        this.classList.remove('invalid');
+      }
+    }
+  });
+
+  // Confirm delete
+  document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+    const expectedId = document.getElementById('deleteClassExpectedId').textContent;
+    const inputVal = document.getElementById('deleteClassConfirmInput').value.trim();
+    
+    if (inputVal !== expectedId) {
+      document.getElementById('deleteClassConfirmInput').classList.add('invalid');
+      showToast('❌ Class ID does not match. Please type the exact class ID.');
+      return;
+    }
+
+    if (!pendingDeleteClassId) return;
+
+    // Perform actual deletion (cascade delete students)
+    performClassDeletion(pendingDeleteClassId);
+    closeDeleteConfirmationModal();
+  });
+
+  // Cancel
+  document.getElementById('cancelDeleteBtn').addEventListener('click', closeDeleteConfirmationModal);
+
+  // Close on overlay click
+  document.getElementById('deleteClassModalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeDeleteConfirmationModal();
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.getElementById('deleteClassModalOverlay').classList.contains('active')) {
+      closeDeleteConfirmationModal();
+    }
+  });
+
+  // ===== ACTUAL DELETE LOGIC (cascade delete students) =====
+  function performClassDeletion(classId) {
+    const allStudents = loadStudentsFromStorage();
+    const affectedStudents = allStudents.filter(s => s.classId === classId);
+    const affectedCount = affectedStudents.length;
+
+    // Remove class from local array
+    classes = classes.filter(c => c.id !== classId);
+    persistClasses();
+
+    // Remove students from storage
+    if (affectedCount > 0) {
+      const remainingStudents = allStudents.filter(s => s.classId !== classId);
+      saveStudentsToStorage(remainingStudents);
+    }
+
+    // Refresh table
+    const searchInput = document.getElementById('classSearchInput');
+    filterClasses(searchInput ? searchInput.value : '');
+
+    // Toast
+    if (affectedCount > 0) {
+      showToast(`🗑️ Class ${classId} + ${affectedCount} student${affectedCount === 1 ? '' : 's'} deleted`);
+    } else {
+      showToast(`🗑️ Class ${classId} deleted`);
+    }
+  }
+
+  function escapeHtml(str) { 
+    if (!str) return ''; 
+    return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); 
+  }
+
+  function openClassDetailPanel(classId) {
+    const cls = classes.find(c => c.id === classId);
+    if (!cls) return;
+    const studentsList = cls.students || [];
+    const studentsHtml = studentsList.map(s => {
+      const photoHtml = s.photo ? `<img src="${s.photo}" class="student-img-class" alt="student">` : `<div class="placeholder-icon-class"><i class="fas fa-user-graduate"></i></div>`;
+      return `
+        <div class="student-card-class">
+          <div class="photo-frame-class">${photoHtml}</div>
+          <div class="student-name-class">${escapeHtml(s.name)}</div>
+          <div class="student-id-class">${escapeHtml(s.id)}</div>
+          <div style="font-size:12px; color:#475569; margin-top:6px;">${escapeHtml(s.fatherName || '—')}</div>
+          <div style="font-size:11px; color:#64748b;">${escapeHtml(s.phone || '')}</div>
+        </div>
+      `;
+    }).join('');
+
+    const statusBadgeClass = cls.status === 'Active' ? 'status-active' : 'status-graduated';
+    const modalContent = `
+      <div style="padding: 0;">
+        <div class="info-summary-grid">
+          <div class="info-summary-item"><strong><i class="fas fa-tag"></i> Class ID:</strong> <span>${escapeHtml(cls.id)}</span></div>
+          <div class="info-summary-item"><strong><i class="fas fa-calendar"></i> Session:</strong> <span>${escapeHtml(cls.session)}</span></div>
+          <div class="info-summary-item"><strong><i class="fas fa-chart-line"></i> Grade:</strong> <span>${escapeHtml(cls.grade)}</span></div>
+          <div class="info-summary-item"><strong><i class="fas fa-layer-group"></i> Section:</strong> <span>${escapeHtml(cls.section)}</span></div>
+          <div class="info-summary-item"><strong><i class="fas fa-users"></i> Total Students:</strong> <span><strong style="color:#2563eb;">${studentsList.length}</strong> enrolled</span></div>
+          <div class="info-summary-item"><strong><i class="fas fa-flag-checkered"></i> Status:</strong> <span><span class="status-badge ${statusBadgeClass}">${cls.status}</span></span></div>
+        </div>
+        <div style="border-top: 1px solid #eef2f8; padding: 20px 28px 8px 28px;">
+          <h4 style="display:flex; align-items:center; gap:10px; font-size:16px; font-weight:700; color:#1e293b;"><i class="fas fa-id-card"></i> Students — Official Photo Frame</h4>
+        </div>
+        <div class="student-grid-class">
+          ${studentsList.length ? studentsHtml : '<div style="grid-column:1/-1; text-align:center; padding:48px; color:#64748b;"><i class="fas fa-user-slash"></i> No students enrolled in this class</div>'}
+        </div>
+      </div>
+    `;
+    document.getElementById('classModalDynamicContent').innerHTML = modalContent;
+    document.getElementById('modalClassTitle').innerHTML = `<i class="fas fa-chalkboard-user"></i> ${escapeHtml(cls.name)}`;
+    document.getElementById('classModalOverlay').classList.add('active');
+  }
+
+  function closeClassModal() {
+    document.getElementById('classModalOverlay').classList.remove('active');
+  }
+
+  document.getElementById('closeModalBtn').addEventListener('click', closeClassModal);
+  document.getElementById('modalFooterCloseBtn').addEventListener('click', closeClassModal);
+  document.getElementById('classModalOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('classModalOverlay')) closeClassModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('classModalOverlay').classList.contains('active')) closeClassModal();
+  });
+
+  filteredClasses = [...classes];
+  renderClassTable();
+</script>
+</body>
+</html>
